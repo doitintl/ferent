@@ -1,14 +1,15 @@
 (ns ferent.core-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
             [ferent.core :refer :all]
             [ferent.metrics :refer [metrics]]
             [ferent.utils :refer [invert-invertible-map
                                   invert-multimap
-                                  pairs-to-multimap]]
-            [clojure.string :as str]))
+                                  pairs-to-multimap]]))
 
 (def test-resources-dir "./test_resources")
 (def resources-dir "./resources")
+
 (deftest test-analyze
   (testing "p2 and p3 depend on p1, because p1 grants permissions to Service Account from p2 and p3"
     (is (= {:arrowin  {:p1 #{:p2 :p3}}
@@ -19,10 +20,12 @@
                     false)))))
 (deftest test-metrics
   (testing "p2 and p3 each depend on one other (p1), so each has 1 arrow-out.
-  p1 has 2 that depend on it, and so has 2 arrow-in."
-    (is (= {:p1 {:arrowin 2 :arrowout 0}
-            :p2 {:arrowin 0 :arrowout 1}
-            :p3 {:arrowin 0 :arrowout 1}}
+  p1 has two projects that depend on it, and so has 2 arrow-in.
+  p2 and p3 are relatively unstable because they depend on another project."
+    (is (= {:p1            {:arrowin 2 :arrowout 0 :instability 0}
+            :p2            {:arrowin 0 :arrowout 1 :instability 1}
+            :p3            {:arrowin 0 :arrowout 1 :instability 1}
+            :project-count 3}
            (metrics {:arrowin  {:p1 #{:p2 :p3}}
                      :arrowout {:p2 #{:p1}
                                 :p3 #{:p1}}})))))
@@ -42,11 +45,11 @@ project1 gives permission to sa-a-project-unknown, so an unknown project depends
             :arrowout {"<UNKNOWN>" #{"project1"}
                        "project2"  #{"project1"}}}
            (analyze-dir test-resources-dir true))))
-  (testing "with data based on  a real project, where dependencies are only betwee
-   projects owned by the same person like
+
+  (testing "with data based on  a real project, where dependencies are only between
+   projects owned by the same person (using the name as a prefix) like
         {:arrowin  {\"fred-proj1\"     #{\"fred-proj2}
-        :arrowout  {\"fred-proj2\"     #{\"fred-proj1}}
-   "
+        :arrowout  {\"fred-proj2\"     #{\"fred-proj1}} "
     (let [pfx (fn [s] (first (str/split s #"-")))
           analysis (analyze-dir resources-dir false)
           [arrowin-sample-k arrowin-sample-set] (first (vec (analysis :arrowin)))

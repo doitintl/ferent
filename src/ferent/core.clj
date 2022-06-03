@@ -4,7 +4,7 @@
                                   invert-multimap
                                   pairs-to-multimap]]
             [sc.api :refer :all]))
-
+;; todo calculate cycles
 (defn analyze [permissions proj-to-serviceaccounts show-unknown]
   (let [unknown "<UNKNOWN>"
         proj-for-service-accounts (fn [service-accounts proj-to-serviceaccounts]
