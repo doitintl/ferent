@@ -20,3 +20,5 @@ for project_id in $(gcloud projects list --format='value(project_id)' | grep pla
 
     fi
 done
+sort -u  permissions_granted_by_project.csv >>permissions_granted_by_project2.csv
+sort -u sa_in_project.csv >>sa_in_project2.csv

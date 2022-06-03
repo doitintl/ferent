@@ -55,7 +55,7 @@ project1 gives permission to sa-a-project-unknown, so an unknown project depends
           [arrowin-sample-k arrowin-sample-set] (first (vec (analysis :arrowin)))
           arrowin-sample-k-pfx (pfx arrowin-sample-k)
           arrowin-sample-v-pfx (pfx (first arrowin-sample-set))]
-      (assert (= arrowin-sample-k-pfx arrowin-sample-v-pfx)
+       (assert (= arrowin-sample-k-pfx arrowin-sample-v-pfx)
               (str "Expect dependencies only between related projects, which
                          in the sample always start with same prefix before dash. Found "
                    arrowin-sample-k-pfx
