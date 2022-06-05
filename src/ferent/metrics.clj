@@ -1,10 +1,5 @@
 (ns ferent.metrics
-  (:require [clojure.data.csv :as csv]
-            [ferent.utils :refer [invert-invertible-map
-                                  invert-multimap
-                                  pairs-to-multimap]]
-            [sc.api :refer :all])
-  (:import (clojure.lang PersistentVector)))
+  (:require [sc.api :refer :all]))
 
 (defn- metric-for-project  [x]
   "Return pairs of project and metrics for that project"
@@ -16,7 +11,7 @@
            :instability (try (/ arrowout-count (+ arrowout-count arrowin-count))
                              (catch ArithmeticException ae 0))}]))
 
-(defn by-project [analysis]
+(defn- by-project [analysis]
   (let [arrowin (analysis :arrowin)
         arrowout (analysis :arrowout)
         projects (set (concat (keys arrowin) (keys arrowout)))
