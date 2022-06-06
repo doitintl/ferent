@@ -1,6 +1,6 @@
 (ns ferent.utils
   (:require [sc.api :refer :all]))
-
+(set! *warn-on-reflection* true)
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
         vec-pairs-of-key-and-valuelist (for [[k v] grouped-pairs-by-key] [k (sort (map second v))])
@@ -19,3 +19,7 @@
                  inverse-multimap))
 
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
+
+(defn twolevel-sort [lst-lst]
+  (sort (map (comp vec sort) lst-lst)))
+

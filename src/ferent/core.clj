@@ -5,8 +5,9 @@
                                   pairs-to-multimap]]
             [sc.api :refer :all]))
 
-;; todo calculate cycles
-(defn analyze [permissions proj-to-serviceaccounts show-unknown]
+(set! *warn-on-reflection* true)
+
+(defn build-graph [permissions proj-to-serviceaccounts show-unknown]
   (let [unknown "<UNKNOWN>"
         proj-for-service-accounts (fn [service-accounts proj-to-serviceaccounts]
                                     (let [sa-to-proj (invert-invertible-map proj-to-serviceaccounts)]
@@ -26,13 +27,13 @@
     {:arrowin  arrowin
      :arrowout arrowout}))
 
-(defn analyze-dir
+(defn build-graph-from-dir
   ([resources-dir show-unknown]
    (letfn [(load-csv [local-file-path] (csv/read-csv (slurp (str resources-dir local-file-path))))
            (load-to-multimap [local-file-path] (pairs-to-multimap (load-csv local-file-path)))]
-     (analyze (load-to-multimap "/permissions_granted_by_project.csv")
-              (load-to-multimap "/sa_in_project.csv")
-              show-unknown)))
+     (build-graph (load-to-multimap "/permissions_granted_by_project.csv")
+                  (load-to-multimap "/sa_in_project.csv")
+                  show-unknown)))
 
   ([resources-dir]
-   (analyze-dir resources-dir true)))
+   (build-graph-from-dir resources-dir true)))
