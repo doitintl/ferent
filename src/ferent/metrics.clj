@@ -18,7 +18,7 @@
         projects (set (concat (keys arrowin) (keys arrowout)))
         pairs (for [k projects] [k [(vec (arrowout k)) (vec (arrowin k))]])]
     (into {} pairs)))
-(set! *warn-on-reflection* true)
+
 (defn metrics [dependency-graph]
   ; dependency-graph looks like
   ; {:arrowin  {"p1" #{"p2" "p3"}}

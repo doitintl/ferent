@@ -1,7 +1,7 @@
 (ns
  ^{:doc "From https://github.com/npcoder2k14/loom/blob/master/src/loom/alg.cljc"}
  ferent.graph
-  (:require     [ferent.utils :refer [twolevel-sort]]
+  (:require     [ferent.utils :refer [ rotate-to-lowest ]]
                 [loom.graph :refer [directed? nodes successors]]))
 (set! *warn-on-reflection* true)
 
@@ -86,4 +86,4 @@
     ::not-a-directed-graph))
 
 (defn digraph-all-cycles [g]
-  (vec (sort (digraph-all-cycles-internal g))))
+  (vec (sort (map  rotate-to-lowest (digraph-all-cycles-internal g)))))
