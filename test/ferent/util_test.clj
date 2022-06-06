@@ -5,8 +5,7 @@
                                   invert-multimap
                                   pairs-to-multimap
                                   twolevel-sort
-                                  rotate-to-lowest
-                                  ]]))
+                                  rotate-to-lowest]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -29,10 +28,8 @@
     (is (= [[1 2 3] [1 5 6]]
            (twolevel-sort  [[6 1 5] [3 2  1]]))))
   (testing "rotate-to-lowest "
-    (is (= ["p1""p2" "p3"] (rotate-to-lowest ["p2"
-                              "p3"
-                              "p1"])))
-    )
-  )
+    (is (= ["p1" "p2" "p3"] (rotate-to-lowest ["p2"
+                                               "p3"
+                                               "p1"])))))
 
 

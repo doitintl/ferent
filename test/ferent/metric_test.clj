@@ -18,8 +18,9 @@
 
 (deftest cycle-test
   (testing "a cycle" (is (= [["p1"   "p2"   "p3"]]
-                            ((metrics {:arrowin  {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
-                                       :arrowout {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}}) :cycles)))))
+                            ((metrics
+                              {:arrowin  {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
+                               :arrowout {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}}) :cycles)))))
 
 (deftest  cycles-from-raw-data
   (testing "get cycles from the raw data"

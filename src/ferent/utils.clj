@@ -26,7 +26,5 @@
 (defn rotate-to-lowest [lst]
   "Rotate lst so that the 0th element is (the first appearance of) its minimal element"
   (let [indexed (map-indexed vector lst)
-        minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed) ]
-    (vec (take (count lst) (drop (first minimal-element) (cycle lst)))))
-
-  )
+        minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed)]
+    (vec (take (count lst) (drop (first minimal-element) (cycle lst))))))
