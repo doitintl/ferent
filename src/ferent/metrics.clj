@@ -25,7 +25,9 @@
   ; :arrowout {"p2" #{"p1"}
   ;            "p3" #{"p1"}}}
   (let [by-proj (by-project dependency-graph)
-        metrics-for-projects (into {} (map metric-for-project by-proj))]
+        metrics-for-projects (into {}
+                                   (sort #(compare (first %1) (first %2))
+                                         (map metric-for-project by-proj)))]
 
     (merge metrics-for-projects
            {:project-count (count metrics-for-projects)
