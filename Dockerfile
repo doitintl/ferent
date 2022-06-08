@@ -1,8 +1,13 @@
-# See here for better options
-#https://hub.docker.com/_/clojure
 
 FROM clojure:openjdk-8-lein-slim-buster
-COPY ./src /usr/src/app/src/
-COPY ./project.clj /usr/src/app
+RUN mkdir -p /usr/src/app
+RUN mkdir -p /usr/src/app/resources
+RUN mkdir -p /usr/src/app/scripts
+
 WORKDIR /usr/src/app
-CMD ["lein", "run"]
+COPY project.clj /usr/src/app/
+RUN lein deps
+COPY ./src /usr/src/app/src/
+COPY scripts/run.sh  /usr/src/app/scripts/
+
+ENTRYPOINT ["./scripts/run.sh" ]
