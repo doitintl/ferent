@@ -1,4 +1,4 @@
-(ns ferent.core
+(ns ferent.build-graph
   (:require [clojure.data.csv :as csv]
             [ferent.utils :refer [invert-invertible-map
                                   invert-multimap
@@ -12,7 +12,7 @@
         proj-for-service-accounts (fn [service-accounts proj-to-serviceaccounts]
                                     (let [sa-to-proj (invert-invertible-map proj-to-serviceaccounts)]
                                       (map #(get sa-to-proj % unknown) service-accounts)))
-        ;todo Should I  replace comp below with  -> so that the order of the functions can make more sense
+        ;todo Should I replace comp below with -> so that the order of the functions can make more sense
         arrowin-with-empties (map (comp
                                    (fn [[proj dep]] [proj (set (remove #(= proj %) dep))]) ;remove self-dependency
                                    (fn [[proj service-accounts]] ;remove UNKNOWN if flag is set

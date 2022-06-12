@@ -3,10 +3,21 @@
   :url "http://github.com/JoshuaFox"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
-  :dependencies [[org.clojure/clojure "1.11.1"]
+  :dependencies [ [org.clojure/clojure "1.11.1"]
                  [org.clojure/data.csv "1.0.1"]
                  [vvvvalvalval/scope-capture "0.3.3-s1"]
-                 [aysylu/loom "1.0.2"]]
-  :repl-options {:init-ns ferent.core}
-  :plugins [[lein-cljfmt "0.8.0"]]
-  :main ferent.main)
+                 [aysylu/loom "1.0.2"]
+                 [org.clojure/data.json "2.4.0"]
+                 ;[com.google.apis/google-api-services-cloudresourcemanager "v3-rev20220523-1.32.1"]
+                 ;[com.google.api-client/google-api-client-gson "1.35.0"]
+                 ;[ com.google.api-client/google-api-client "1.35.0"]
+                 ;[ com.google.apis/google-api-services-iam "v2beta-rev20220526-1.32.1" ]
+                 ;[com.google.auth/google-auth-library-oauth2-http "1.6.0"]
+                 ;[com.google.apis/google-api-services-cloudresourcemanager "v3-rev20220523-1.32.1"]
+                 [babashka/process "0.1.3"]
+                 ]
+                 :repl-options {:init-ns ferent.build-graph}
+  :plugins [[lein-cljfmt "0.8.0"]
+            [lein-ubersource "0.1.1"]
+            ]
+  :main ferent.read-projects-cli)

@@ -1,6 +1,6 @@
 (ns
- ^{:doc "From https://github.com/npcoder2k14/loom/blob/master/src/loom/alg.cljc"}
- ferent.graph
+ ^{:doc "Code from https://github.com/npcoder2k14/loom/blob/master/src/loom/alg.cljc"}
+ ferent.find-cycles
   (:require     [ferent.utils :refer [rotate-to-lowest]]
                 [loom.graph :refer [directed? nodes successors]]))
 (set! *warn-on-reflection* true)
@@ -66,24 +66,21 @@
       (unblock-nodes cycle-data curr #{})
       (insert-in-blocked-map cycle-data curr (successors g curr)))))
 
-(defn- digraph-all-cycles-internal
+(defn digraph-all-cycles [grph]
   "This function returns all simple cycles present in a directed graph.
-  Implemented algorithm as mentioned in
-   https://www.cs.tufts.edu/comp/150GA/homeworks/hw1/Johnson%2075.PDF
-  "
-  [g]
-  (if (directed? g)
-    (as-> {:ans [] :rset #{}} cycle-data
-      (reduce (fn [{:keys [ans rset]} curr]
-                (let [{:keys [all-cycles rset]}
-                      (find-all-cycles g curr curr false [curr] rset #{} {})
-                      updated-rset (conj rset curr)]
-                  {:ans  (concat ans all-cycles)
-                   :rset updated-rset}))
+Implemented algorithm as mentioned in
+ https://www.cs.tufts.edu/comp/150GA/homeworks/hw1/Johnson%2075.PDF
+"
+  (letfn [(make-digraph [g] (if (directed? g)
+                              (as-> {:ans [] :rset #{}} cycle-data
+                                (reduce (fn [{:keys [ans rset]} curr]
+                                          (let [{:keys [all-cycles rset]}
+                                                (find-all-cycles g curr curr false [curr] rset #{} {})
+                                                updated-rset (conj rset curr)]
+                                            {:ans  (concat ans all-cycles)
+                                             :rset updated-rset}))
 
-              cycle-data (nodes g))
-      (:ans cycle-data))
-    ::not-a-directed-graph))
-
-(defn digraph-all-cycles [g]
-  (vec (sort (map  rotate-to-lowest (digraph-all-cycles-internal g)))))
+                                        cycle-data (nodes g))
+                                (:ans cycle-data))
+                              ::not-a-directed-graph))]
+    (sort (map rotate-to-lowest (make-digraph grph)))))

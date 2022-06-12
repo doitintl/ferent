@@ -1,7 +1,7 @@
 (ns ferent.graph-building-test
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
-            [ferent.core :refer :all]))
+            [ferent.build-graph :refer :all]))
 
 (def test-resources-dir "./test_resources")
 

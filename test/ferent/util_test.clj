@@ -1,6 +1,6 @@
 (ns ferent.util-test
   (:require [clojure.test :refer :all]
-            [ferent.core :refer :all]
+            [ferent.build-graph :refer :all]
             [ferent.utils :refer [invert-invertible-map
                                   invert-multimap
                                   pairs-to-multimap

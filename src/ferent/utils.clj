@@ -15,8 +15,8 @@
 (defn invert-invertible-map [multimap]
   (let [inverse-multimap (invert-multimap multimap)]
     (assert (every? #(>= 1 (count %)) (vals inverse-multimap))
-            (str "Each value should be associated with 1 and only 1 key"
-                 inverse-multimap))
+            (str "Each value should be associated with 1 and only 1 key. Duplicates: "
+                 (vec (remove #(>= 1 (count %)) (vals inverse-multimap)))))
 
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
 

@@ -1,6 +1,6 @@
 (ns ferent.metric-test
   (:require [clojure.test :refer :all]
-            [ferent.core :refer :all]
+            [ferent.build-graph :refer :all]
             [ferent.metrics :refer [metrics]]))
 
 (deftest metrics-test

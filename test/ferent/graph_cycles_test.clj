@@ -1,5 +1,5 @@
 (ns ferent.graph-cycles-test
-  (:require [ferent.graph :refer [digraph-all-cycles]]
+  (:require [ferent.find-cycles :refer [digraph-all-cycles]]
             [ferent.utils :refer [twolevel-sort]]
             [clojure.test :refer :all]
             [loom.graph]))
@@ -10,7 +10,7 @@
                                            ["c" "a"]
                                            ["d" "c"]))
 
-(def sample-ferent-graph (ferent.graph/digraph {:arrowout
+(def sample-ferent-graph (ferent.find-cycles/digraph {:arrowout
                                                 {"a" #{"b"}
                                                  "b" #{"c" "d"}
                                                  "c" #{"a"}
@@ -22,9 +22,9 @@
                              ["p1" "p3"]
                              ["p2" "p1"]
                              ["p3" "p1"])
-         (ferent.graph/digraph {:arrowout {"p2" #{"p1"}
-                                           "p3" #{"p1"}
-                                           "p1" #{"p2" "p3"}}})))
+         (ferent.find-cycles/digraph {:arrowout {"p2" #{"p1"}
+                                           "p3"       #{"p1"}
+                                           "p1"       #{"p2" "p3"}}})))
 
     (is (=   sample-loom-graph
              sample-ferent-graph))))

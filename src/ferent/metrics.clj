@@ -1,10 +1,10 @@
 (ns ferent.metrics
-  (:require [ferent.graph :refer [digraph digraph-all-cycles]]
+  (:require [ferent.find-cycles :refer [digraph digraph-all-cycles]]
             [sc.api :refer :all]))
 
-(defn- metric-for-project  [project-and-arrows-both-ways]
+(defn- metric-for-project [project-and-arrows-both-ways]
   "Return pairs of project and metrics for that project"
-  (let [[proj [arrowout  arrowin]] project-and-arrows-both-ways
+  (let [[proj [arrowout arrowin]] project-and-arrows-both-ways
         arrowout-count (count arrowout)
         arrowin-count (count arrowin)]
     [proj {:arrowin     arrowin-count
@@ -20,15 +20,14 @@
     (into {} pairs)))
 
 (defn metrics [dependency-graph]
-  ; dependency-graph looks like
-  ; {:arrowin  {"p1" #{"p2" "p3"}}
-  ; :arrowout {"p2" #{"p1"}
-  ;            "p3" #{"p1"}}}
   (let [by-proj (by-project dependency-graph)
-        metrics-for-projects (into {}
-                                   (sort #(compare (first %1) (first %2))
-                                         (map metric-for-project by-proj)))]
+        metrcs (map metric-for-project by-proj)
+        metrics-for-projs (into {}
+                                (sort #(compare (first %1) (first %2))
+                                      metrcs))
+        digraph-all (digraph-all-cycles (digraph dependency-graph))
+        merged (assoc metrics-for-projs
+                      :project-count (count metrics-for-projs)
+                      :cycles digraph-all)]
 
-    (merge metrics-for-projects
-           {:project-count (count metrics-for-projects)
-            :cycles        (digraph-all-cycles (digraph dependency-graph))})))
+    merged))
