@@ -10,7 +10,7 @@
 (deftest test-utilities
   (testing "invert-multimap"
     (is (= {1 #{:a} 2 #{:a} 3 #{:a :b} 4 #{:b} 5 #{:b}}
-           (invert-multimap {:a #{1 2 3} :b [3 4 5]})))) \
+           (invert-multimap {:a #{1 2 3} :b [3 4 5]}))))
 
   (testing "invert-invertible-map"
     (is (= {1 :a 2 :b 3 :c 4 :d}

@@ -1,38 +1,30 @@
-(ns ferent.read-projects-cli
+(ns ferent.read-projects-and-calculate
   (:require
     [babashka.process :refer [check process]]
     [clojure.data.json :as json]
     [clojure.string :as str]
     [ferent.build-graph :refer [build-graph]]
     [ferent.metrics :refer [metrics]]
-    [sc.api :refer :all])
-  (:import (java.util Date)))
-
-(def serviceA "serviceAccount:")
+    [sc.api :refer :all]))
 
 (defn accessible-projects []
-  (let [
-
-        proj-triples (-> (process '[gcloud projects list]) :out slurp str/split-lines)
+  (let [proj-triples (-> (process '[gcloud projects list]) :out slurp str/split-lines)
         all-projects (map #(str/trim (first (str/split % #"\s+"))) (rest proj-triples))
-        require (re-pattern(or (System/getenv "REQUIRE") ""))
+        require (re-pattern (or (System/getenv "REQUIRE") ""))
         projects-only-required (filter #(re-find require %) all-projects)
-        exclude (re-pattern(or (System/getenv "EXCLUDE") "sys-|-fs-"))
-        projects-no-excluded (remove #(re-find exclude %) projects-only-required)
-        ]
+        exclude (re-pattern (or (System/getenv "EXCLUDE") "sys-|-fs-"))
+        projects-no-excluded (remove #(re-find exclude %) projects-only-required)]
     projects-no-excluded))
-
 
 (defn org-for-project [proj-id]
   (let [org-line (-> (process (conj '[gcloud projects get-ancestors] proj-id)) check :out slurp str/split-lines last)
         org (first (str/split org-line #"\s+"))]
-    (println proj-id )
+    (println proj-id)
     org))
 
 (defn service-accounts-in-project [proj-id]
-  (let [lst (rest (
-                    -> (process (str "gcloud iam service-accounts list --project " proj-id))
-                       check :out slurp str/split-lines))
+  (let [lst (rest (-> (process (str "gcloud iam service-accounts list --project " proj-id))
+                      check :out slurp str/split-lines))
         emails (map #(first (take-last 2 (str/split % #"\s+"))) lst)]
     emails))
 
@@ -46,29 +38,23 @@
         out-s ^String (-> process-output check :out slurp)
         j (json/read-str out-s)
         members (apply concat (map #(% "members") (j "bindings")))
-        sas-only (filter #(str/starts-with? % serviceA) members)
-        sa-emails (map #(subs % (count serviceA)) sas-only)]
+        service-account-pfx "serviceAccount:"
+        sas-only (filter #(str/starts-with? % service-account-pfx) members)
+        sa-emails (map #(subs % (count service-account-pfx)) sas-only)]
     sa-emails))
 
 (defn service-accounts-granted-role-by-projects [proj-ids]
   (into {} (for [p proj-ids] [p (service-accounts-granted-role-by-project p)])))
 
-
 (defn- projects-in-org [projects org]
   (filter #(= (org-for-project %) org) projects))
 
-(defn- list-projects []
+(defn- accessible-projects-in-org []
   (assert (not (empty? (System/getenv "ORG_ID"))) "Must set ORG_ID env varable")
   (let [org (System/getenv "ORG_ID")
         projects (accessible-projects)
-        in-org (projects-in-org projects org)
-
-        ]
+        in-org (projects-in-org projects org)]
     in-org))
-
-(println(new Date))
-(println(time (str ".......\n"(str/join "\n" (list-projects)))))
-
 
 (defn get-metrics [projs]
   (let [sa-granted-role-by-proj (service-accounts-granted-role-by-projects projs)
@@ -77,14 +63,10 @@
         metrcs (metrics grph)]
     metrcs))
 
-
-
 (defn -main []
   (println (str "Env variables: " (str/join ", " (map #(str % ": " (or (System/getenv %) "-")) ["ORG_ID" "REQUIRE" "EXCLUDE"]))))
-  (let [projs (list-projects)
+  (let [projs (accessible-projects-in-org)
         metrcs (get-metrics projs)]
     (clojure.pprint/pprint metrcs)))
-
-
-
+(-main)
 

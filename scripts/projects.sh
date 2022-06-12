@@ -13,8 +13,8 @@ fi
 [ -z $REQUIRE ] || echo "only process this pattern: $REQUIRE"
 
 for project_id in $(gcloud projects list --format='value(project_id)' | \
-      egrep $REQUIRE | \
-      egrep -v $EXCLUDE ); do
+      grep -E $REQUIRE | \
+      grep -E -v $EXCLUDE ); do
     org_id=$(gcloud projects get-ancestors $project_id | grep organization | cut -f1 -d' ')
     if [ "$org_id" -eq "$ORG_ID" ]; then
         # Get Service Accounts to which the proj grants permissions
