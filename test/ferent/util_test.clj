@@ -5,7 +5,8 @@
                                   invert-multimap
                                   pairs-to-multimap
                                   twolevel-sort
-                                  rotate-to-lowest]]))
+                                  rotate-to-lowest
+                                  pfilter]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -32,4 +33,7 @@
                                                "p3"
                                                "p1"])))))
 
-
+(deftest test-pfilter
+  (testing " "
+    (is (= ["a" "ab"]
+           (pfilter #(> 3 (count %)) ["abcd" "a" "abcdef" "ab"])))))

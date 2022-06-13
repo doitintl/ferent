@@ -12,7 +12,7 @@
         proj-for-service-accounts (fn [service-accounts proj-to-serviceaccounts]
                                     (let [sa-to-proj (invert-invertible-map proj-to-serviceaccounts)]
                                       (map #(get sa-to-proj % unknown) service-accounts)))
-        ;todo Should I replace comp below with -> so that the order of the functions can make more sense
+        ;todo Should I somehow replace comp below with -> so that the order of the functions can make more sense
         arrowin-with-empties (map (comp
                                     (fn [[proj dep]] [proj (set (remove #(= proj %) dep))]) ;remove self-dependency
                                     (fn [[proj service-accounts]] ;remove UNKNOWN if flag is set

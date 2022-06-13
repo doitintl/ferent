@@ -1,6 +1,11 @@
 (ns ferent.utils
-  (:require [sc.api :refer :all]))
+  (:require [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [sc.api :refer :all])
+  (:import (java.io IOException PushbackReader)))
+
 (set! *warn-on-reflection* true)
+
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
         vec-pairs-of-key-and-valuelist (for [[k v] grouped-pairs-by-key] [k (sort (map second v))])
@@ -16,7 +21,7 @@
   (let [inverse-multimap (invert-multimap multimap)]
     (assert (every? #(>= 1 (count %)) (vals inverse-multimap))
             (str "Each value should be associated with 1 and only 1 key. Duplicates: "
-                 (vec (remove #(>= 1 (count %)) (vals inverse-multimap)))))
+                 (remove #(>= 1 (count %)) (vals inverse-multimap))))
 
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
 
@@ -28,3 +33,17 @@
   (let [indexed (map-indexed vector lst)
         minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed)]
     (vec (take (count lst) (drop (first minimal-element) (cycle lst))))))
+
+(defn load-edn
+  "Load edn from an io/reader source (filename or io/resource)."
+  [source]
+  (try
+    (with-open [r (io/reader source)]
+      (edn/read (PushbackReader. r)))
+    (catch IOException e
+      (throw (Exception. (str "Couldn't open " (.getMessage e)))))
+    (catch RuntimeException e
+      (throw (Exception. (str "Error parsing edn file " (.getMessage e)))))))
+
+(defn pfilter [pred coll]
+  (map first (filter second (map vector coll (pmap pred coll)))))

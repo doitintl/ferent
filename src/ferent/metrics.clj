@@ -16,7 +16,7 @@
   (let [arrowin (dependency-graph :arrowin)
         arrowout (dependency-graph :arrowout)
         projects (set (concat (keys arrowin) (keys arrowout)))
-        pairs (for [k projects] [k [(vec (arrowout k)) (vec (arrowin k))]])]
+        pairs (for [k projects] [k [(arrowout k) (arrowin k)]])]
     (into {} pairs)))
 
 (defn metrics [dependency-graph]
