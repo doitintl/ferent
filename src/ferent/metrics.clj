@@ -27,7 +27,7 @@
                                       metrcs))
         digraph-all (digraph-all-cycles (digraph dependency-graph))
         merged (assoc metrics-for-projs
-                 :project-count (count metrics-for-projs)
-                 :cycles digraph-all)]
+                      :project-count (count metrics-for-projs)
+                      :cycles digraph-all)]
 
     merged))

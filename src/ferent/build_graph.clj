@@ -5,8 +5,6 @@
                                   pairs-to-multimap]]
             [sc.api :refer :all]))
 
-(set! *warn-on-reflection* true)
-
 (defn build-graph [permissions proj-to-serviceaccounts show-unknown]
   (let [unknown "<UNKNOWN>"
         proj-for-service-accounts (fn [service-accounts proj-to-serviceaccounts]
@@ -14,12 +12,12 @@
                                       (map #(get sa-to-proj % unknown) service-accounts)))
         ;todo Should I somehow replace comp below with -> so that the order of the functions can make more sense
         arrowin-with-empties (map (comp
-                                    (fn [[proj dep]] [proj (set (remove #(= proj %) dep))]) ;remove self-dependency
-                                    (fn [[proj service-accounts]] ;remove UNKNOWN if flag is set
-                                      [proj (remove
-                                              (fn [sa] (if show-unknown false (= unknown sa))) service-accounts)])
-                                    (fn [[proj service-accounts]] ;get proj based on service account
-                                      [proj (proj-for-service-accounts service-accounts proj-to-serviceaccounts)]))
+                                   (fn [[proj dep]] [proj (set (remove #(= proj %) dep))]) ;remove self-dependency
+                                   (fn [[proj service-accounts]] ;remove UNKNOWN if flag is set
+                                     [proj (remove
+                                            (fn [sa] (if show-unknown false (= unknown sa))) service-accounts)])
+                                   (fn [[proj service-accounts]] ;get proj based on service account
+                                     [proj (proj-for-service-accounts service-accounts proj-to-serviceaccounts)]))
                                   permissions)
         arrowin (into {} (remove (fn [[_ v]] (empty? v))    ; remove mapping where val is empty
                                  arrowin-with-empties))

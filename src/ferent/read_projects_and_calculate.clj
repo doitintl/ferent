@@ -1,12 +1,12 @@
 (ns ferent.read-projects-and-calculate
   (:require
-    [babashka.process :refer [check process]]
-    [clojure.data.json :as json]
-    [clojure.string :as str]
-    [ferent.build-graph :refer [build-graph]]
-    [ferent.metrics :refer [metrics]]
-    [ferent.utils :refer [load-edn pfilter]]
-    [sc.api :refer :all])
+   [babashka.process :refer [check process]]
+   [clojure.data.json :as json]
+   [clojure.string :as str]
+   [ferent.build-graph :refer [build-graph]]
+   [ferent.metrics :refer [metrics]]
+   [ferent.utils :refer [load-edn pfilter]]
+   [sc.api :refer :all])
   (:import (java.util Date)))
 
 (defn filter-by-env [all-projects]
@@ -21,13 +21,13 @@
         _ (println "\"gcloud projects list\"  found " (count proj-triples))
         projects (map #(str/trim (first (str/split % #"\s+"))) (rest proj-triples))]
     projects))
-
+;;todo remove
 (defn org-of [proj-id]
   (let [org-line (-> (process (conj '[gcloud projects get-ancestors] proj-id)) check :out slurp str/split-lines last)
         _ (println (str "gcloud projects get-ancestors " proj-id))
         org (first (str/split org-line #"\s+"))]
     org))
-
+(org-of "sys-17653448756023764431434333")
 (defn service-accounts-in [proj-id]
   (let [cmd-line (str "gcloud iam service-accounts list --project " proj-id)
         _ (println cmd-line)
@@ -54,9 +54,8 @@
         members (apply concat (map #(% "members") (j "bindings")))
         service-account-pfx "serviceAccount:"
         sas-only (filter #(str/starts-with? % service-account-pfx) members)
-        sa-emails (map #(subs % (count service-account-pfx)) sas-only)
+        sa-emails (map #(subs % (count service-account-pfx)) sas-only)]
 
-        ]
     sa-emails))
 
 (defn service-accounts-granted-role-by-projects [proj-ids]
@@ -81,9 +80,8 @@
         _ (println (count loaded) "projects unfiltered")
 
         projects (filter-by-env loaded)
-        _ (println (count projects) "filtered projects")
+        _ (println (count projects) "filtered projects")]
 
-        ]
     projects))
 
 (defn -main []
@@ -95,6 +93,5 @@
               _ (println (count projs-in-org) "projects in org")
               metrcs (get-metrics projs-in-org)]
           (println "Metrics:")
-          (clojure.pprint/pprint metrcs)))
-  )
+          (clojure.pprint/pprint metrcs))))
 
