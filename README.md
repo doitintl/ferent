@@ -3,6 +3,17 @@
 A Clojure library  to calculate dependency metrics
 measurements on the model of [JDepend](https://github.com/clarkware/jdepend).
 
+For each project, we calculate dependencies based on the count
+of service account in other projects that are granted a role
+in this project. The idea is that the other project "knows about"
+this project and is impacted if this project changes.
+
+It is reasonable to use service accounts are the only automated way to track this link
+if we assume that internal integrations are authenticated
+(i.e., internal websites are not like  public websites that can be
+left open for unauthenticated use) and that authentication is done
+with service accounts (which is the best practice).
+
 ## Output
 For example
 ```clojure
@@ -15,14 +26,14 @@ For example
  }
 ```
 ### Explanation
-* For each project, 
-  * `:arrow-in` is the number of dependees (called "afferent" in JDepend).
-  * `:arrow-out`  is the number of dependencies (called "efferent" in JDepend).
-  * `:instability` is the count of dependees as a 
-  fraction of all links for this project 
-  (dependencies plus dependees). The idea is that a project 
-  that depends on lots of others will be impact if any change 
-  and so  should be  non-infrastructural, at the application-level.
+
+* `:arrow-in` is the number of dependees (called "afferent" in JDepend).
+* `:arrow-out`  is the number of dependencies (called "efferent" in JDepend).
+* `:instability` is the count of dependees as a 
+fraction of all links for this project 
+(dependencies plus dependees). The idea is that a project 
+that depends on lots of others will be impact if any change 
+and so  should be  non-infrastructural, at the application-level.
 * `:project-count`  is the number of projects in this organization that were analyzed.
 * `cycles` shows cycles of dependency links among the projects.
 * Links to unknown projects -- e.g., outside the organization -- 
@@ -44,7 +55,7 @@ are in each one.
     * This is mandatory unless you pass a `PROJECT_FILE` (see below)
     * Ferent will retrieve a list of all projects in this organization
     for which you have the right permissions, 
-    * and track dependencies between them. 
+    and track dependencies between them. 
     
   * `QUERY_FILTER`
     * For example `NOT displayName=doitintl* AND NOT projectId=sys-*`
@@ -57,7 +68,10 @@ are in each one.
     * The default is 1000.
   * `PROJECTS_FILE`
     * The relative or absolute path to a file with a list of projects in EDN format.
-    * If used then the list of projects will not be queried out of GCP, 
+    * This is optional, and generally you will not use it (since
+    you probably don't have a list or projects, and Ferent
+    can retrieve that for you.)
+    * If used, then the list of projects will not be queried out of GCP, 
    though the list of permissions and service accounts for each project will be. 
     
 
