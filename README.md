@@ -8,20 +8,22 @@ of service account in other projects that are granted a role
 in this project. The idea is that the other project "knows about"
 this project and is impacted if this project changes.
 
-It is reasonable to use service accounts are the only automated way to track this link
+It is reasonable to use service accounts to track dependencies
 if we assume that internal integrations are authenticated
 (i.e., internal websites are not like  public websites that can be
 left open for unauthenticated use) and that authentication is done
 with service accounts (which is the best practice).
 
 ## Output
-For example
+
+### Example
+
 ```clojure
 
 {"project-a"    {:arrow-in 2, :arrow-out 10, :instability 0.83},
  ;...
  :project-count 44,
- :cycles        () ; cycles between projects; avoid these!
+ :cycles        () 
 
  }
 ```
@@ -34,8 +36,11 @@ fraction of all links for this project
 (dependencies plus dependees). The idea is that a project 
 that depends on lots of others will be impact if any change 
 and so  should be  non-infrastructural, at the application-level.
-* `:project-count`  is the number of projects in this organization that were analyzed.
-* `cycles` shows cycles of dependency links among the projects.
+* `:project-count`  is the number of projects in this organization
+that were analyzed.
+* `:cycles` shows cycles of dependency links among the projects. 
+Avoid these! A cycle are effectively links everything in one 
+unit, so if one change, all are potentially impacted.
 * Links to unknown projects -- e.g., outside the organization -- 
 are unknown. This is because your system architecture generally 
 lives inside an organization and any links outside it are continued
