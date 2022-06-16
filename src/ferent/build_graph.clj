@@ -22,8 +22,8 @@
         arrowin (into {} (remove (fn [[_ v]] (empty? v))    ; remove mapping where val is empty
                                  arrowin-with-empties))
         arrowout (invert-multimap arrowin)]
-    {:arrowin  arrowin
-     :arrowout arrowout}))
+    {:arrow-in  arrowin
+     :arrow-out arrowout}))
 
 (defn build-graph-from-dir
   ([resources-dir show-unknown]

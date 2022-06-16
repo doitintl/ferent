@@ -7,20 +7,20 @@
   (testing "p2 and p3 each depend on one other (p1), so each has 1 arrow-out.
   p1 has two projects that depend on it, and so has 2 arrow-in.
   p2 and p3 are relatively unstable because they depend on another project."
-    (is (= {"p1"           {:arrowin 2 :arrowout 0 :instability 0}
-            "p2"           {:arrowin 0 :arrowout 1 :instability 1}
-            "p3"           {:arrowin 0 :arrowout 1 :instability 1}
+    (is (= {"p1"           {:arrow-in 2 :arrow-out 0 :instability 0}
+            "p2"           {:arrow-in 0 :arrow-out 1 :instability 1}
+            "p3"           {:arrow-in 0 :arrow-out 1 :instability 1}
             :project-count 3
             :cycles        []}
-           (metrics {:arrowin  {"p1" #{"p2" "p3"}}
-                     :arrowout {"p2" #{"p1"}
-                                "p3" #{"p1"}}})))))
+           (metrics {:arrow-in  {"p1" #{"p2" "p3"}}
+                     :arrow-out {"p2" #{"p1"}
+                                "p3"  #{"p1"}}})))))
 
 (deftest cycle-test
   (testing "a cycle" (is (= [["p1"   "p2"   "p3"]]
                             ((metrics
-                              {:arrowin  {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
-                               :arrowout {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}}) :cycles)))))
+                               {:arrow-in {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
+                               :arrow-out {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}}) :cycles)))))
 
 (deftest  cycles-from-raw-data
   (testing "get cycles from the raw data"

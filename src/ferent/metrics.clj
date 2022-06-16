@@ -7,14 +7,14 @@
   (let [[proj [arrowout arrowin]] project-and-arrows-both-ways
         arrowout-count (count arrowout)
         arrowin-count (count arrowin)]
-    [proj {:arrowin     arrowin-count
-           :arrowout    arrowout-count
+    [proj {:arrow-in    arrowin-count
+           :arrow-out   arrowout-count
            :instability (try (/ arrowout-count (+ arrowout-count arrowin-count))
-                             (catch ArithmeticException ae 0))}]))
+                             (catch ArithmeticException _ Double/NaN))}]))
 
 (defn- by-project [dependency-graph]
-  (let [arrowin (dependency-graph :arrowin)
-        arrowout (dependency-graph :arrowout)
+  (let [arrowin (dependency-graph :arrow-in)
+        arrowout (dependency-graph :arrow-out)
         projects (set (concat (keys arrowin) (keys arrowout)))
         pairs (for [k projects] [k [(arrowout k) (arrowin k)]])]
     (into {} pairs)))

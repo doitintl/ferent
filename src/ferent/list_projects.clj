@@ -12,6 +12,7 @@
            (com.google.auth.oauth2 GoogleCredentials)))
 
 (def page-size (Integer/parseInt (get-env "QUERY_PAGE_SIZE" "1000")))
+
 (defn- cloud-resource-manager-service []
   (let [credential (.createScoped (GoogleCredentials/getApplicationDefault) [IamScopes/CLOUD_PLATFORM])
         builder (new CloudResourceManager$Builder
@@ -72,7 +73,7 @@
                (let [{projects-from-query :projects
                       tok-from-query      :token} (one-page-query svc filter org-id tok)
                      accumulated-projects (concat accumulator projects-from-query)]
-                 (.println *err* (str "So far loaded " (count accumulated-projects) "projects"))
+                 (.println *err* (str "So far loaded " (count accumulated-projects) " projects"))
                  (if (nil? tok-from-query)
                    accumulated-projects
                    (recur tok-from-query accumulated-projects))))))]

@@ -5,7 +5,7 @@
             [loom.graph :refer [directed? nodes successors]]))
 
 (defn digraph [arrows]
-  (apply loom.graph/digraph (apply concat (map (fn [[k vals]] (map (fn [v] [k v]) vals)) (arrows :arrowout)))))
+  (apply loom.graph/digraph (apply concat (map (fn [[k vals]] (map (fn [v] [k v]) vals)) (arrows :arrow-out)))))
 
 (defn- insert-in-blocked-map
   "Helper function for digraph-all-cycles.
