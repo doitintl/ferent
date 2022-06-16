@@ -4,8 +4,6 @@
             [sc.api :refer :all])
   (:import (java.io IOException PushbackReader)))
 
-(set! *warn-on-reflection* true)
-
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
         vec-pairs-of-key-and-valuelist (for [[k v] grouped-pairs-by-key] [k (sort (map second v))])
@@ -47,3 +45,13 @@
 
 (defn pfilter [pred coll]
   (map first (filter second (map vector coll (pmap pred coll)))))
+
+(defn get-env ([key default]
+               (let [val (System/getenv key)]
+                 (if (and (= default :required) (nil? val))
+                   (throw (AssertionError. (str "Must provide a value for env variable " key)))
+                   (let [retval (or val default)]
+                     (do
+                       (.println *err* (str "Env for " key ": " retval))
+                       retval)))))
+  ([key] (get-env key nil)))

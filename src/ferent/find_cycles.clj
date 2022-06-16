@@ -3,7 +3,6 @@
  ferent.find-cycles
   (:require [ferent.utils :refer [rotate-to-lowest]]
             [loom.graph :refer [directed? nodes successors]]))
-(set! *warn-on-reflection* true)
 
 (defn digraph [arrows]
   (apply loom.graph/digraph (apply concat (map (fn [[k vals]] (map (fn [v] [k v]) vals)) (arrows :arrowout)))))
