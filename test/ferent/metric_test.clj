@@ -30,7 +30,7 @@
             :cycles)))
     (is (= [["p1" "p2"] ["p1" "p2" "p3"]]                   ; two cycles
            ((metrics
-             {:arrow-in {}                               ; arrow-in is not used, so dropping it
+             {:arrow-in {}                               ; arrow-in is not used, so dropping it for the test
               :arrow-out {"p1" #{"p2"}, "p2" #{"p3" "p1"}, "p3" #{"p1"}}})
             :cycles)))))
 
