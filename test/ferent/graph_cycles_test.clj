@@ -23,8 +23,8 @@
                              ["p2" "p1"]
                              ["p3" "p1"])
          (ferent.find-cycles/digraph {:arrow-out {"p2" #{"p1"}
-                                                 "p3"  #{"p1"}
-                                                 "p1"  #{"p2" "p3"}}})))
+                                                  "p3"  #{"p1"}
+                                                  "p1"  #{"p2" "p3"}}})))
 
     (is (=   sample-loom-graph
              sample-ferent-graph))))
