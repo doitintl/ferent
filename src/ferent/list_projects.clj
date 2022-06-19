@@ -28,7 +28,8 @@
 (defn- process-project [^String org-id ^Project proj]
 
   (let [org-of (fn [proj-id]
-                 (let [org-line (-> (process (conj '[gcloud projects get-ancestors] proj-id)) check :out slurp str/split-lines last)
+                 (let [org-line (-> (process (conj '[gcloud projects get-ancestors] proj-id))
+                                    check :out slurp str/split-lines last)
                        org (first (str/split org-line #"\s+"))]
                    org))
         project-id (.getProjectId proj)
