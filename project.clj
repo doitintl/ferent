@@ -21,4 +21,4 @@
   :plugins [[lein-cljfmt "0.8.0"]
             [lein-ubersource "0.1.1"]
             ]
-  :main ferent.read-projects-cli)
+  :main ferent.read-projects-and-calculate )

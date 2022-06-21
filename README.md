@@ -9,13 +9,12 @@ in this project. The idea is that the other project "knows about"
 this project and is impacted if this project changes.
 
 Though there can be dependencies not reflected in service accounts,
-but it is reasonable to use service accounts to track dependencies
+it is reasonable to use service accounts to track dependencies
 if we assume that
    * internal integrations are authenticated
    (i.e., internal websites are not like  public websites that can be
-   left open for unauthenticated use) 
-   * inter-service authentication is done with service accounts (which is the best practice). 
-
+   left open for unauthenticated use);
+   * inter-service authentication is done with service accounts (which is the best practice).
 
 ## Output
 
@@ -31,58 +30,71 @@ if we assume that
 
  }
 ```
-### Explanation
 
-* `:arrow-in` is the number of dependees (called "afferent" in JDepend).
-* `:arrow-out`  is the number of dependencies (called "efferent" in JDepend).
-* `:instability` is the count of dependees as a 
-fraction of all links for this project 
-(dependencies plus dependees). The idea is that a project 
-that depends on lots of others will be impact if any change 
-and so  should be  non-infrastructural, at the application-level.
+### Explanation
+* For each project
+  * `:arrow-out`  is the number of dependencies (called "efferent" in JDepend).
+  * `:arrow-in` is the number of dependees (called "afferent" in JDepend).
+  * `:instability` is the count of dependees as a fraction of all links for this project 
+  (dependencies plus dependees). The idea is that a project 
+  that depends on lots of others is at risk of being impacted by a change 
+  and so  should be non-infrastructural -- it should be at the application-level.
 * `:project-count`  is the number of projects in this organization
 that were analyzed.
 * `:cycles` shows cycles of dependency links among the projects.
-* In the example above `project-a` depends on `project-b`
-which depends on `project-c` which depends again on `project-a`, resulting
-in a cycle between the three; and in addition, `project-c` depends back on `project-b`, resulting
-in a cycle between the two.
-Avoid cycles! A cycle  effectively links everything in one 
-unit, so if one change, all are potentially impacted.
+  * In the example above 
+    * `project-a` depends on `project-b`
+    which depends on `project-c` which depends again on `project-a`, resulting
+    in a cycle between the three
+    * and in addition, `project-c` depends back on `project-b`, resulting
+    in a cycle between the two.
+  * Avoid cycles! A cycle  effectively links everything in one 
+    unit, so if one change, all are potentially impacted.
 * Links to unknown projects -- e.g., outside the organization -- 
 are ignored. This is because your system architecture generally 
-lives inside an organization and any links outside it are considered to be
+lives inside an organization, and any links outside it are considered to be
 outside integrations.
+
+## The name
+
+Ferent is short for "afferent" and "efferent".  I use  other terminology here, but in brief:
+* Efferent links (Laten _ex_ and _ferens_ "leading out"), called  `:arrow-out`, show the dependencies,
+  the projects that this project depends on. A change in those projects might break this one.
+* Afferent links (Laten _ad_ and _ferens_ "leading in"), called  `:arrow-in` in the code, show  the dependees,
+  the projects that depend on a given project. A change in this project might break those.
+
 
 ## Usage
 ### Permissions
 Use Organization Administrator or any role that will allow you to
-list project, to see what IAM roles each grants, and what service accounts
+list project, to see what IAM roles each projects grants, and what service accounts
 are in each one.
 
 ### Environment variables
 * There are no command-line arguments.
-* Instead, set  env variables:
-  * `ORG_ID`
-    * For example `9872345612389`
-    * This is mandatory unless you pass a `PROJECT_FILE` (see below)
-    * Ferent will retrieve a list of all projects in this organization
-    for which you have the right permissions, 
-    and track dependencies between them. 
-    
-  * `QUERY_FILTER`
-    * For example `NOT displayName=doitintl* AND NOT projectId=sys-*`
-    * This is optional. Set it to make the querying more efficient.
-    * See docs [here](https://cloud.google.com/workflows/docs/reference/googleapis/cloudresourcemanager/v3/projects/search)
-    * The default is `NOT projectId=sys-*``
+  * Set env variables:
+    * `ORG_ID`
+      * For example `9876543210987`
+      * This is mandatory unless you pass a `PROJECT_FILE` value (see below).
+      * Ferent will retrieve a list of all projects in this organization
+      for which you have the right permissions, and track dependencies between them. 
+    * `QUERY_FILTER`
+      * For example
+
+          `NOT displayName=doitintl* AND NOT projectId=sys-*`
+
+      * This is optional. Set it to make the querying faster.
+      * See (rather misformatted) docs on query syntax [here](https://cloud.google.com/workflows/docs/reference/googleapis/cloudresourcemanager/v3/projects/search).
+      * The default is `NOT projectId=sys-*`, which excludes the many projects
+    often generated by Google Workspace AppScript.
   * `QUERY_PAGE_SIZE`
-    * For example `950`
+    * For example `950`.
     * This is optional and usually you will not set it.
-    * The default is 1000.
+    * The default value is 1000.
   * `PROJECTS_FILE`
     * The relative or absolute path to a file with a list of projects in EDN format.
-    * This is optional, and generally you will not use it (since
-    you probably don't have a list or projects, and Ferent
+    * This is optional, and generally you will not use it 
+    (since you probably don't have a list or projects, and Ferent
     can retrieve that for you.)
     * If used, then the list of projects will not be queried out of GCP, 
    though the list of permissions and service accounts for each project will be. 

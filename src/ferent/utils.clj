@@ -52,6 +52,6 @@
                    (throw (AssertionError. (str "Must provide a value for env variable " key)))
                    (let [retval (or val default)]
                      (do
-                       (.println *err* (str "Env for " key ": " retval))
+                       (.println *err* (str  key ": " retval))
                        retval)))))
   ([key] (get-env key nil)))

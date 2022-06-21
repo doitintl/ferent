@@ -1,5 +1,5 @@
 
-FROM clojure:openjdk-8-lein-slim-buster
+FROM google/cloud-sdk:alpine
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/app/resources
 RUN mkdir -p /usr/src/app/scripts
