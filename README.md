@@ -70,6 +70,9 @@ Use Organization Administrator or any role that will allow you to
 list project, to see what IAM roles each projects grants, and what service accounts
 are in each one.
 
+### Prerequisites
+* [Install Clojure](https://clojure.org/guides/install_clojure)
+
 ### Environment variables
 * There are no command-line arguments.
   * Set env variables:
