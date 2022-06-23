@@ -22,9 +22,7 @@
 (defn metrics [dependency-graph]
   (let [by-proj (by-project dependency-graph)
         metrcs (map metric-for-project by-proj)
-        metrics-for-projs (into (array-map)
-                                (sort #(compare (first %1) (first %2))
-                                      metrcs))
+        metrics-for-projs (into {} metrcs )
         cycles (digraph-all-cycles (digraph dependency-graph))
         merged (assoc metrics-for-projs
                       :project-count (count metrics-for-projs)
