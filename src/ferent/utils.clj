@@ -5,8 +5,9 @@
   (:import (java.io IOException PushbackReader)))
 
 (def thread-count
-  "Highly IO-bound processes should get more threads than we have processors."
-  (* 3  (.. Runtime getRuntime availableProcessors)))
+  "Highly IO-bound processes should get more threads than we have processors.
+  The multiplier below  empirically gave the best results in a few tests."
+  (* 5  (.. Runtime getRuntime availableProcessors)))
 
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
