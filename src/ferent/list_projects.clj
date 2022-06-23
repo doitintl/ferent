@@ -1,7 +1,8 @@
 (ns ferent.list-projects
   (:require [babashka.process :refer [check process]]
             [clojure.string :as str]
-            [ferent.utils :refer [get-env]])
+            [com.climate.claypoole  :as cp]
+            [ferent.utils :refer [get-env thread-count]])
 
   (:import (com.google.api.client.googleapis.javanet GoogleNetHttpTransport)
            (com.google.api.client.json.gson GsonFactory)
@@ -11,7 +12,7 @@
            (com.google.auth.http HttpCredentialsAdapter)
            (com.google.auth.oauth2 GoogleCredentials)))
 
-(def page-size (Integer/parseInt (get-env "QUERY_PAGE_SIZE" "1000")))
+(defn page-size [] (Integer/parseInt (get-env "QUERY_PAGE_SIZE" "1000")))
 
 (defn- cloud-resource-manager-service []
   (let [credential (.createScoped (GoogleCredentials/getApplicationDefault) [IamScopes/CLOUD_PLATFORM])
@@ -57,28 +58,33 @@
                        ^String org-id
                        ^String tok]
 
-  (let [^SearchProjectsResponse searched (.. svc (projects) (search) (setQuery filter) (setPageToken tok) (setPageSize page-size) execute)
+  (let [^SearchProjectsResponse searched
+        (..
+         svc (projects) (search)
+         (setQuery filter) (setPageToken tok)
+         (setPageSize (page-size)) execute)
         tok (.getNextPageToken searched)
         projs (.getProjects searched)
-        project-ids-with-nils (pmap (partial process-project org-id) projs)
+        project-ids-with-nils (cp/pmap  (cp/threadpool thread-count) (partial process-project org-id) projs)
         proj-ids-in-org (remove nil? project-ids-with-nils)]
+    (.println *err* (str "Loaded " (count projs) " projects from one query page of which " (count proj-ids-in-org) " in org"))
     {:projects proj-ids-in-org :token tok}))
 
 (defn filtered-projects-in-org
   ([^String filter ^String org-id]
-   (let [paged-query-int
+   (let [filtered-projects-in-org
          (fn []                                             ;   params from closure
            (let [svc (cloud-resource-manager-service)]
              (loop [tok nil
                     accumulator []]
-               (let [{projects-from-query :projects
-                      tok-from-query      :token} (one-page-query svc filter org-id tok)
-                     accumulated-projects (concat accumulator projects-from-query)]
-                 (.println *err* (str "So far loaded " (count accumulated-projects) " projects"))
+               (let [{proj-in-org-from-query :projects
+                      tok-from-query         :token} (one-page-query svc filter org-id tok)
+                     accumulated-projects (concat accumulator proj-in-org-from-query)]
                  (if (nil? tok-from-query)
                    accumulated-projects
-                   (recur tok-from-query accumulated-projects))))))]
-     (sort (paged-query-int))))
+                   (recur tok-from-query accumulated-projects))))))
+         projects (filtered-projects-in-org)]
+     projects))
 
   ([] (filtered-projects-in-org (get-env "QUERY_FILTER" "NOT projectId=sys-*") ; e.g. "NOT displayName=doitintl* AND NOT projectId=sys-*"
                                 (get-env "ORG_ID" :required)))) ; e.g. "970193134296"

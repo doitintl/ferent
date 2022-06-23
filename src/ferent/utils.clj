@@ -1,8 +1,12 @@
 (ns ferent.utils
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [sc.api :refer :all])
+            [com.climate.claypoole :as cp])
   (:import (java.io IOException PushbackReader)))
+
+(def thread-count
+  "Highly IO-bound processes should get more threads"
+  (* 3 (.. Runtime getRuntime availableProcessors)))
 
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
@@ -44,14 +48,19 @@
       (throw (Exception. (str "Error parsing edn file " (.getMessage e)))))))
 
 (defn pfilter [pred coll]
-  (map first (filter second (map vector coll (pmap pred coll)))))
+  (map first (filter second (map vector coll (cp/pmap (cp/threadpool thread-count) pred coll)))))
 
-(defn get-env ([key default]
-               (let [val (System/getenv key)]
-                 (if (and (= default :required) (nil? val))
-                   (throw (AssertionError. (str "Must provide a value for env variable " key)))
-                   (let [retval (or val default)]
-                     (do
-                       (.println *err* (str  key ": " retval))
-                       retval)))))
-  ([key] (get-env key nil)))
+(defn- get-env-int ([key default]
+                    (let [val (System/getenv key)]
+                      (if (and (= default :required) (nil? val))
+                        (throw (AssertionError. (str "Must provide a value for env variable " key)))
+                        (let [retval (or val default)]
+                          (do
+                            (.println *err* (str  key ": " retval))
+                            retval)))))
+  ([key] (get-env-int key nil)))
+
+;avoid printing each time
+(def  get-env (memoize get-env-int))
+
+

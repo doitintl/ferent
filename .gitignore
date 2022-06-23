@@ -15,7 +15,8 @@ pom.xml.asc
 *iml
 .idea/
 target/
-resources/
+misc-data/
 TEMP*
+temp*
 scripts/projects
 *.log

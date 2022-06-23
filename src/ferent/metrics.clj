@@ -22,12 +22,13 @@
 (defn metrics [dependency-graph]
   (let [by-proj (by-project dependency-graph)
         metrcs (map metric-for-project by-proj)
-        metrics-for-projs (into {}
+        metrics-for-projs (into (array-map)
                                 (sort #(compare (first %1) (first %2))
                                       metrcs))
-        digraph-all (digraph-all-cycles (digraph dependency-graph))
+        cycles (digraph-all-cycles (digraph dependency-graph))
         merged (assoc metrics-for-projs
                       :project-count (count metrics-for-projs)
-                      :cycles digraph-all)]
+                      :cycles cycles)
+        sorted (into (sorted-map-by #(compare (str %1) (str %2))) merged)]
 
-    merged))
+    sorted))
