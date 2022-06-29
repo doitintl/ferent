@@ -38,5 +38,4 @@
   (testing "get cycles from the raw data"
     (is (= [["p1" "p2" "p3"]]
            ((metrics (build-graph {"p3" ["sa-p2"] "p2" ["sa-p1"] "p1" ["sa-p3"]}
-                                  {"p2" ["sa-p2"] "p3" ["sa-p3"] "p1" ["sa-p1"]}
-                                  false)) :cycles)))))
+                                  {"p2" ["sa-p2"] "p3" ["sa-p3"] "p1" ["sa-p1"]})) :cycles)))))

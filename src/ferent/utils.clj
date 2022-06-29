@@ -21,18 +21,19 @@
     (pairs-to-multimap flattened)))
 
 (defn invert-invertible-map [multimap]
+  "Invert a multimap, but only if the elements across all vals of the multimap are unique."
   (let [inverse-multimap (invert-multimap multimap)]
     (assert (every? #(>= 1 (count %)) (vals inverse-multimap))
             (str "Each value should be associated with 1 and only 1 key. Duplicates: "
                  (remove #(>= 1 (count %)) (vals inverse-multimap))))
-
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
 
 (defn twolevel-sort [lst-lst]
+  "For a nested list of lists, sort each internal list and sort across all lists."
   (sort (map (comp vec sort) lst-lst)))
 
 (defn rotate-to-lowest [lst]
-  "Rotate lst so that the 0th element is (the first appearance of) its minimal element"
+  "Rotate lst so that the 0th element is (the first appearance of) its minimal element."
   (let [indexed (map-indexed vector lst)
         minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed)]
     (vec (take (count lst) (drop (first minimal-element) (cycle lst))))))
@@ -49,15 +50,29 @@
       (throw (Exception. (str "Error parsing edn file " (.getMessage e)))))))
 
 (defn pfilter [pred coll]
+  "Filter in parallel"
   (map first (filter second (map vector coll (cp/pmap (cp/threadpool thread-count) pred coll)))))
 
 ; todo could make the following lazy
 (defn paginated-query [query-function]
-  (loop [page-token nil
+  (loop [pagination-token nil
          accumulator []]
-    (let [{items                 :items
-           page-token-from-query :token} (query-function page-token)
+    (let [{items                       :items
+           pagination-token-from-query :token} (query-function pagination-token)
           accumulated-items (concat accumulator items)]
-      (if (nil? page-token-from-query)
+      (if (nil? pagination-token-from-query)
         accumulated-items
-        (recur page-token-from-query accumulated-items)))))
+        (recur pagination-token-from-query accumulated-items)))))
+
+(defmacro timer
+  "Evaluates expr and prints the time it took.  Returns the value of
+ expr. Copied from clojure.core/time"
+  [tag expr]
+  `(let [start# (. System (nanoTime))
+         ret# ~expr]
+     (prn (str ~tag ": " (Math/round (/ (double (- (. System (nanoTime)) start#)) 1000000000.0)) " seconds"))
+     ret#))
+
+(defn build-map [lst f]
+  "Build a map where the keys are the elements of lst and the values are f applied to that key."
+  (into {} (map (fn [k] [k (f k)]) lst)))

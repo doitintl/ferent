@@ -4,7 +4,7 @@
   (:require [ferent.utils :refer [rotate-to-lowest]]
             [loom.graph :refer [directed? nodes successors]]))
 
-(defn digraph [arrows]
+(defn to-digraph [arrows]
   (let [as-list (apply concat (map (fn [[k vals]] (map (fn [v] [k v]) vals)) (arrows :arrow-out)))]
     (apply loom.graph/digraph as-list)))
 

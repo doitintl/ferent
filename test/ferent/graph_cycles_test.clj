@@ -10,11 +10,11 @@
                                            ["c" "a"]
                                            ["d" "c"]))
 
-(def sample-ferent-graph (ferent.find-cycles/digraph {:arrow-out
-                                                      {"a" #{"b"}
-                                                       "b" #{"c" "d"}
-                                                       "c" #{"a"}
-                                                       "d" #{"c"}}}))
+(def sample-ferent-graph (ferent.find-cycles/to-digraph {:arrow-out
+                                                         {"a" #{"b"}
+                                                          "b" #{"c" "d"}
+                                                          "c" #{"a"}
+                                                          "d" #{"c"}}}))
 (deftest test-convert-graph
   (testing " "
     (is (=
@@ -22,9 +22,9 @@
                              ["p1" "p3"]
                              ["p2" "p1"]
                              ["p3" "p1"])
-         (ferent.find-cycles/digraph {:arrow-out {"p2" #{"p1"}
-                                                  "p3" #{"p1"}
-                                                  "p1" #{"p2" "p3"}}})))
+         (ferent.find-cycles/to-digraph {:arrow-out {"p2" #{"p1"}
+                                                     "p3"    #{"p1"}
+                                                     "p1"    #{"p2" "p3"}}})))
 
     (is (= sample-loom-graph
            sample-ferent-graph))))
