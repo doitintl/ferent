@@ -7,7 +7,7 @@
 (def thread-count
   "Highly IO-bound processes should get more threads than we have processors.
   The multiplier below  empirically gave the best results in a few tests."
-  (* 5  (.. Runtime getRuntime availableProcessors)))
+  (* 5 (.. Runtime getRuntime availableProcessors)))
 
 (defn pairs-to-multimap [seq-of-pairs]
   (let [grouped-pairs-by-key (group-by first (sort seq-of-pairs))
@@ -51,17 +51,13 @@
 (defn pfilter [pred coll]
   (map first (filter second (map vector coll (cp/pmap (cp/threadpool thread-count) pred coll)))))
 
-(defn- get-env-int ([key default]
-                    (let [val (System/getenv key)]
-                      (if (and (= default :required) (nil? val))
-                        (throw (AssertionError. (str "Must provide a value for env variable " key)))
-                        (let [retval (or val default)]
-                          (do
-                            (.println *err* (str  key ": " retval))
-                            retval)))))
-  ([key] (get-env-int key nil)))
-
-;avoid printing each time
-(def  get-env (memoize get-env-int))
-
-
+; todo could make the following lazy
+(defn paginated-query [query-function]
+  (loop [page-token nil
+         accumulator []]
+    (let [{items                 :items
+           page-token-from-query :token} (query-function page-token)
+          accumulated-items (concat accumulator items)]
+      (if (nil? page-token-from-query)
+        accumulated-items
+        (recur page-token-from-query accumulated-items)))))

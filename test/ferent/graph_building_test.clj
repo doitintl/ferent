@@ -8,7 +8,7 @@
   (testing "p2 and p3 depend on p1, because p1 grants permissions to Service Account from p2 and p3"
     (is (= {:arrow-in  {"p1" #{"p2" "p3"}}
             :arrow-out {"p2" #{"p1"}
-                        "p3"  #{"p1"}}}
+                        "p3" #{"p1"}}}
            (build-graph {"p1" ["sa-p2" "sa-p3"]}
                         {"p2" ["sa-p2"] "p3" ["sa-p3"]}
                         false)))))
@@ -26,5 +26,5 @@ project1 gives permission to sa-a-project-unknown, so an unknown project depends
     (is (= {:arrow-in  {"project1" #{"<UNKNOWN>"
                                      "project2"}}
             :arrow-out {"<UNKNOWN>" #{"project1"}
-                        "project2"   #{"project1"}}}
+                        "project2"  #{"project1"}}}
            (build-graph-from-dir test-resources-dir true)))))

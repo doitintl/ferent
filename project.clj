@@ -14,6 +14,7 @@
                  [com.google.auth/google-auth-library-oauth2-http "1.7.0"]
                  [com.google.apis/google-api-services-iam "v1-rev20220526-1.32.1"]
                  [babashka/process "0.1.3"]
+                 [org.clojure/tools.cli "1.0.206"]
                  ]
   :repl-options {:init-ns ferent.build-graph}
   :plugins [[lein-cljfmt "0.8.0"]

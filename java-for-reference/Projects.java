@@ -12,17 +12,18 @@ import java.util.Collections;
 
 public class Projects {
     static String organizationsPfx = "organizations/";
+
     public static void main(String[] args) throws Exception {
 
-        var org =args.length>0?args[0]:"976583563296";
-        var queryS=args.length>1?args[1]:"NOT displayName=doitintl* AND NOT projectId=sys-*";
+        var org = args.length > 0 ? args[0] : "976583563296";
+        var queryS = args.length > 1 ? args[1] : "NOT displayName=doitintl* AND NOT projectId=sys-*";
 
-        var desiredOrgPath= organizationsPfx +org;
+        var desiredOrgPath = organizationsPfx + org;
         String tok = null;
 
         var svc = initializeService();
-        var  projectsInOrg= new ArrayList<String>();
-        var  projectsUnknownIfInOrg= new ArrayList<String>();
+        var projectsInOrg = new ArrayList<String>();
+        var projectsUnknownIfInOrg = new ArrayList<String>();
 
         do {
             tok = oneSearchQuery(queryS, desiredOrgPath, tok, svc, projectsInOrg, projectsUnknownIfInOrg);
@@ -45,9 +46,9 @@ public class Projects {
         for (var project : projs) {
             var projectId = project.getProjectId();
             var parent = project.getParent();
-            if (desiredOrgPath.equals(parent)){
+            if (desiredOrgPath.equals(parent)) {
                 projectsInOrg.add(projectId);
-            }else if (!parent.startsWith(organizationsPfx)   ){
+            } else if (!parent.startsWith(organizationsPfx)) {
                 projectsUnknownIfInOrg.add(projectId);
             }//else in another org, not in our org
         }

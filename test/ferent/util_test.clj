@@ -4,9 +4,9 @@
             [ferent.utils :refer [invert-invertible-map
                                   invert-multimap
                                   pairs-to-multimap
-                                  twolevel-sort
+                                  pfilter
                                   rotate-to-lowest
-                                  pfilter]]))
+                                  twolevel-sort]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -27,7 +27,7 @@
 
   (testing "twolevel-sort"
     (is (= [[1 2 3] [1 5 6]]
-           (twolevel-sort  [[6 1 5] [3 2  1]]))))
+           (twolevel-sort [[6 1 5] [3 2 1]]))))
   (testing "rotate-to-lowest "
     (is (= ["p1" "p2" "p3"] (rotate-to-lowest ["p2"
                                                "p3"

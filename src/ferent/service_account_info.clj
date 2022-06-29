@@ -3,8 +3,8 @@
    [babashka.process :refer [check process]]
    [clojure.data.json :as json]
    [clojure.string :as str]
-   [ferent.utils :refer [thread-count]]
-   [com.climate.claypoole   :as cp]))
+   [com.climate.claypoole :as cp]
+   [ferent.utils :refer [thread-count]]))
 
 (defn service-accounts-in [proj-id]
   (let [cmd-line (str "gcloud iam service-accounts list --project " proj-id)
@@ -21,7 +21,7 @@
     emails))
 
 (defn service-accounts-in-projects [proj-ids]
-  (into {} (cp/pmap  (cp/threadpool thread-count)  (fn [p] [p (service-accounts-in p)]) proj-ids)))
+  (into {} (cp/pmap (cp/threadpool thread-count) (fn [p] [p (service-accounts-in p)]) proj-ids)))
 
 (defn- service-accounts-granted-role-by [proj-id]
   (let [cmd-line (str "gcloud projects get-iam-policy " proj-id " --format json")
