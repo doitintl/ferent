@@ -1,15 +1,14 @@
 (ns ferent.util-test
   (:require [clojure.test :refer :all]
             [ferent.build-graph :refer :all]
-            [ferent.utils :refer [invert-invertible-map
+            [ferent.utils :refer [build-map
+                                  invert-invertible-map
                                   invert-multimap
                                   pairs-to-multimap
                                   pfilter
-                                  rotate-to-lowest
-                                  twolevel-sort
-                                  build-map
                                   remove-keys-with-empty-val
-                                  ]]))
+                                  rotate-to-lowest
+                                  twolevel-sort]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -43,9 +42,8 @@
 
 (deftest test-build-map
   (testing " "
-    (is (= {1 2 , 2 3 , 3 4}
+    (is (= {1 2, 2 3, 3 4}
            (build-map [1 2 3] inc)))))
-
 
 (deftest test-remove-keys-with-empty-va
   (testing " "

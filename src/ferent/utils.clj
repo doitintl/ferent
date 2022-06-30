@@ -55,6 +55,10 @@
 
 ; todo could make the following lazy
 (defn paginated-query [query-function]
+  "Repeatedly call query-function.
+  The query-function should return a map with keys :items and :token.
+  If key :token has value nil, stop the iteration. If it is non-nil, it is passed
+  into the  query-function on the next iteration."
   (loop [pagination-token nil
          accumulator []]
     (let [{items                       :items
@@ -66,8 +70,7 @@
 
 (defn remove-keys-with-empty-val [map-or-sequence-of-pairs]
   "remove items were the second element is empty"
-  (into {} (remove (fn [[_ v]] (empty? v))) map-or-sequence-of-pairs)
-  )
+  (into {} (remove (fn [[_ v]] (empty? v))) map-or-sequence-of-pairs))
 
 (defmacro timer
   "Evaluates expr and prints the time it took.  Returns the value of
@@ -82,4 +85,19 @@
   "Build a map where the keys are the elements of sequence and the values are f applied to that key."
   (into {} (map (fn [k] [k (f k)]) sequence)))
 
-(comment (remove-keys-with-empty-val (into {} [[1 [2]] [3 []] [5 '(6)] [7 #{}] [8 nil]])))
+(defn get-env
+  "Get env variable.
+  If the env variable is undefined, and  the second argument is provided and is :required,
+  then an error is thrown when the env variable is undefined; or otherwise the   second arg is the default.
+  If the second arg is not provided, then the default is nil."
+
+  ([key default]
+
+   (let [val (System/getenv key)]
+     (if (and (= default :required) (nil? val))
+       (throw (AssertionError. (str "Must provide a value for env variable " key)))
+       (let [retval (or val default)]
+         (do
+           (.println *err* (str "Env for " key ": " retval))
+           retval)))))
+  ([key] (get-env key nil)))

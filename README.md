@@ -126,11 +126,11 @@ Key steps
           (concurrently, for speed): Use
           `gcloud projects get-ancestors $PROJECT_ID`
           to find the organization.
-        * I don't see a way to do that in Java, and so I call the CLI.)
+        * I don't see a way to do that in Java, and so I call the CLI.) 
           Accept those in your org; filter out those not in your org
 
 [1]: https://cloud.google.com/java/docs/reference/google-cloud-resourcemanager/latest/com.google.cloud.resourcemanager.v3
-the
+ 
 
 ## License
 

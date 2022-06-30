@@ -1,10 +1,10 @@
 (ns ferent.service-account-info
   (:require
-   [babashka.process :refer [check process]]
-   [clojure.data.json :as json]
-   [clojure.string :as str]
-   [com.climate.claypoole :as cp]
-   [ferent.utils :refer [thread-count]]))
+    [babashka.process :refer [check process]]
+    [clojure.data.json :as json]
+    [clojure.string :as str]
+    [com.climate.claypoole :as cp]
+    [ferent.utils :refer [thread-count]]))
 
 (defn- service-accounts-in [proj-id]
   (let [cmd-line (str "gcloud iam service-accounts list --project " proj-id)
