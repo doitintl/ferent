@@ -25,10 +25,13 @@
 (defn do-all [params]
   (.println *err* (str "Params: " params))
   (check-org! (:org-id params))
-  (-> params load-projects build-metrics))
+  ( utils/timer "Total"
+   (-> params load-projects build-metrics)))
 
 (defn do-all-and-print [params]
-  (utils/timer "Total" (clojure.pprint/pprint (do-all params))))
+
+  (clojure.pprint/pprint (do-all params))
+  )
 
 (def cli-options
   [["-o" "--org-id ORG_ID" "Numerical org id, mandatory"]
@@ -39,6 +42,5 @@
 (defn -main [& args]
   (do-all-and-print (:options (cli/parse-opts args cli-options))))
 
-(comment (do-all {:org-id "976583563296"
-                  :filter "NOT displayName=doit* AND NOT projectId=sys-*"}))
+
 
