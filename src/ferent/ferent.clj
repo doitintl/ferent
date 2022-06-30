@@ -44,5 +44,5 @@
 
 
 
-(comment (do-all {:org-id ""
+(comment (do-all {:org-id "976583563296"
                   :filter "displayName=a*  AND NOT displayName=doit* AND NOT projectId=sys-*"}))
