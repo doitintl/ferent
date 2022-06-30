@@ -7,7 +7,9 @@
                                   pfilter
                                   rotate-to-lowest
                                   twolevel-sort
-                                  build-map]]))
+                                  build-map
+                                  remove-keys-with-empty-val
+                                  ]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -43,3 +45,10 @@
   (testing " "
     (is (= {1 2 , 2 3 , 3 4}
            (build-map [1 2 3] inc)))))
+
+
+(deftest test-remove-keys-with-empty-va
+  (testing " "
+    (is (= {1 [2], 5 '(6)}
+           (remove-keys-with-empty-val
+             (into {} [[1 [2]] [3 []] [5 '(6)] [7 #{}] [8 nil]]))))))

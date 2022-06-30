@@ -16,7 +16,7 @@
     (into {} (for [[k vs] as-map] [k (set vs)]))))
 
 (defn invert-multimap [multimap]
-  (let [inverse (for [[k lst] multimap] (for [i lst] [i k]))
+  (let [inverse (for [[k sequence] multimap] (for [i sequence] [i k]))
         flattened (apply concat inverse)]
     (pairs-to-multimap flattened)))
 
@@ -28,15 +28,15 @@
                  (remove #(>= 1 (count %)) (vals inverse-multimap))))
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
 
-(defn twolevel-sort [lst-lst]
+(defn twolevel-sort [sequence-sequence]
   "For a nested list of lists, sort each internal list and sort across all lists."
-  (sort (map (comp vec sort) lst-lst)))
+  (sort (map (comp vec sort) sequence-sequence)))
 
-(defn rotate-to-lowest [lst]
-  "Rotate lst so that the 0th element is (the first appearance of) its minimal element."
-  (let [indexed (map-indexed vector lst)
+(defn rotate-to-lowest [sequence]
+  "Rotate sequence so that the 0th element is (the first appearance of) its minimal element."
+  (let [indexed (map-indexed vector sequence)
         minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed)]
-    (vec (take (count lst) (drop (first minimal-element) (cycle lst))))))
+    (vec (take (count sequence) (drop (first minimal-element) (cycle sequence))))))
 
 (defn load-edn
   "Load edn from an io/reader source (filename or io/resource)."
@@ -64,6 +64,11 @@
         accumulated-items
         (recur pagination-token-from-query accumulated-items)))))
 
+(defn remove-keys-with-empty-val [map-or-sequence-of-pairs]
+  "remove items were the second element is empty"
+  (into {} (remove (fn [[_ v]] (empty? v))) map-or-sequence-of-pairs)
+  )
+
 (defmacro timer
   "Evaluates expr and prints the time it took.  Returns the value of
  expr. Copied from clojure.core/time"
@@ -73,6 +78,8 @@
      (prn (str ~tag ": " (Math/round (/ (double (- (. System (nanoTime)) start#)) 1000000000.0)) " seconds"))
      ret#))
 
-(defn build-map [lst f]
-  "Build a map where the keys are the elements of lst and the values are f applied to that key."
-  (into {} (map (fn [k] [k (f k)]) lst)))
+(defn build-map [sequence f]
+  "Build a map where the keys are the elements of sequence and the values are f applied to that key."
+  (into {} (map (fn [k] [k (f k)]) sequence)))
+
+(comment (remove-keys-with-empty-val (into {} [[1 [2]] [3 []] [5 '(6)] [7 #{}] [8 nil]])))
