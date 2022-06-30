@@ -23,7 +23,8 @@
   (build-map (set (apply concat (map keys [arrow-in arrow-out]))) (fn [p] [(arrow-out p) (arrow-in p)])))
 
 (defn metrics [dependency-graph]
-  "Return metrics, where keys are each project, plus keys for the global statistics :project-count and :cycles"
+  "Return metrics, a map where keys are each project, plus keys for the global statistics :project-count and :cycles.
+  Param dependency-graph can be generated with build-graph/build-graph"
   (let [metrics-for-projs (into {} (map metrics-for-project (by-project dependency-graph)))
         per-project-plus-global-stats
         (assoc metrics-for-projs
