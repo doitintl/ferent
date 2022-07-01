@@ -26,7 +26,7 @@
   (.println *err* (str "Params: " params))
   (check-org! (:org-id params))
 
-  (utils/timer "Total"
+  (utils/timer "Total time"
                (-> params load-projects build-metrics)))
 
 (defn do-all-and-print [params]
@@ -35,12 +35,16 @@
 
 (def cli-options
   [["-o" "--org-id ORG_ID" "Numerical org id, mandatory"]
-   ["-q" "--query-filter QUERY_FILTER" "Query filter" :default "NOT projectId=sys-*"]
-   ["-f" "--projects-file PROJECT_FILE" "Project file" :default nil]
+   ["-q" "--filter QUERY_FILTER" "Query filter" :default "NOT projectId=sys-*"]
+   ["-p" "--projects-file PROJECT_FILE" "Project file" :default nil]
    ["-h" "--help"]])
 
 (defn -main [& args]
-  (do-all-and-print (:options (cli/parse-opts args cli-options))))
+  (let [opts (cli/parse-opts args cli-options)
+        errors (:errors opts)]
+    (when errors
+      (throw (IllegalArgumentException. (str errors))))
+    (do-all-and-print (:options opts))))
 
 (comment (do-all {:org-id (get-env "ORG_ID" true)
                   :filter "NOT displayName=doit* AND NOT projectId=sys-*"}))

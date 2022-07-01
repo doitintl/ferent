@@ -74,7 +74,7 @@
 
 (defmacro timer
   "Evaluates expr and prints the time it took.  Returns the value of
- expr. Copied from clojure.core/time"
+ expr. Copied from clojure.core/time, but allows you to provide a tag"
   [tag expr]
   `(let [start# (. System (nanoTime))
          ret# ~expr]
