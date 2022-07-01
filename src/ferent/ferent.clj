@@ -30,8 +30,12 @@
                (-> params load-projects build-metrics)))
 
 (defn do-all-and-print [params]
-  (.println *err* (str "Projects in org that grant permissions to service accounts from other projects in the org."))
-  (clojure.pprint/pprint (do-all params)))
+  (let [result (do-all params)]
+    (.println *err* (str "
+============================================
+RESULT: Projects in org that grant permissions to service accounts from other projects in the org."))
+
+    (clojure.pprint/pprint result)))
 
 (def cli-options
   [["-o" "--org-id ORG_ID" "Numerical org id, mandatory"]

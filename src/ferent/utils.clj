@@ -78,7 +78,7 @@
   [tag expr]
   `(let [start# (. System (nanoTime))
          ret# ~expr]
-     (prn (str ~tag ": " (Math/round (/ (double (- (. System (nanoTime)) start#)) 1000000000.0)) " seconds"))
+     (.println *err* (str ~tag ": " (Math/round (/ (double (- (. System (nanoTime)) start#)) 1000000000.0)) " seconds"))
      ret#))
 
 (defn build-map [sequence f]
