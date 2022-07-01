@@ -1,8 +1,8 @@
 (ns ferent.metrics
   (:require
-    [ferent.find-cycles :refer [digraph-all-cycles to-digraph]]
-    [ferent.utils :refer [build-map]]
-    [sc.api :refer :all]))
+   [ferent.find-cycles :refer [digraph-all-cycles to-digraph]]
+   [ferent.utils :refer [build-map]]
+   [sc.api :refer :all]))
 
 (defn- metrics-for-project [project-and-arrows-both-ways]
   "Return pair of project and metrics for that project"
@@ -28,6 +28,6 @@
   (let [metrics-for-projs (into {} (map metrics-for-project (by-project dependency-graph)))
         per-project-plus-global-stats
         (assoc metrics-for-projs
-          :project-count (count metrics-for-projs)
-          :cycles (digraph-all-cycles (to-digraph dependency-graph)))]
+               :project-count (count metrics-for-projs)
+               :cycles (digraph-all-cycles (to-digraph dependency-graph)))]
     (into (sorted-map-by #(compare (str %1) (str %2))) per-project-plus-global-stats)))

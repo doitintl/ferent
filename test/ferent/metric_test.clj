@@ -20,18 +20,18 @@
   (testing "a cycle"
     (is (= [["p1" "p2"]]                                    ;simplest case
            ((metrics
-              {:arrow-in  {"p2" #{"p1"} "p1" #{"p2"}},
-               :arrow-out {"p1" #{"p2"} "p2" #{"p1"}}})
+             {:arrow-in  {"p2" #{"p1"} "p1" #{"p2"}},
+              :arrow-out {"p1" #{"p2"} "p2" #{"p1"}}})
             :cycles)))
     (is (= [["p1" "p2" "p3"]]
            ((metrics
-              {:arrow-in  {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
-               :arrow-out {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}})
+             {:arrow-in  {"p3" #{"p2"}, "p2" #{"p1"}, "p1" #{"p3"}},
+              :arrow-out {"p1" #{"p2"}, "p2" #{"p3"}, "p3" #{"p1"}}})
             :cycles)))
     (is (= [["p1" "p2"] ["p1" "p2" "p3"]]                   ; two cycles
            ((metrics
-              {:arrow-in  {}                                ; arrow-in is not used, so dropping it for the test
-               :arrow-out {"p1" #{"p2"}, "p2" #{"p3" "p1"}, "p3" #{"p1"}}})
+             {:arrow-in  {}                                ; arrow-in is not used, so dropping it for the test
+              :arrow-out {"p1" #{"p2"}, "p2" #{"p3" "p1"}, "p3" #{"p1"}}})
             :cycles)))))
 
 (deftest cycles-from-raw-data

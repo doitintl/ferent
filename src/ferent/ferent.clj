@@ -1,12 +1,12 @@
 (ns ferent.ferent
   (:require
-    [babashka.process :refer [check process]]
-    [clojure.tools.cli :as cli]
-    [ferent.build-graph :refer [build-graph]]
-    [ferent.metrics :refer [metrics]]
-    [ferent.query-projects :refer [filtered-projects-in-org]]
-    [ferent.service-account-info :refer [service-accounts-granted-role-by-projects service-accounts-in-projects]]
-    [ferent.utils :refer [get-env load-edn] :as utils]))
+   [babashka.process :refer [check process]]
+   [clojure.tools.cli :as cli]
+   [ferent.build-graph :refer [build-graph]]
+   [ferent.metrics :refer [metrics]]
+   [ferent.query-projects :refer [filtered-projects-in-org]]
+   [ferent.service-account-info :refer [service-accounts-granted-role-by-projects service-accounts-in-projects]]
+   [ferent.utils :refer [get-env load-edn] :as utils]))
 
 (defn- build-metrics [projs]
   (metrics (build-graph (service-accounts-granted-role-by-projects projs)
@@ -25,10 +25,12 @@
 (defn do-all [params]
   (.println *err* (str "Params: " params))
   (check-org! (:org-id params))
+
   (utils/timer "Total"
                (-> params load-projects build-metrics)))
 
 (defn do-all-and-print [params]
+  (.println *err* (str "Projects in org that grant permissions to service accounts from other projects in the org."))
   (clojure.pprint/pprint (do-all params)))
 
 (def cli-options
@@ -42,3 +44,4 @@
 
 (comment (do-all {:org-id (get-env "ORG_ID" true)
                   :filter "NOT displayName=doit* AND NOT projectId=sys-*"}))
+
