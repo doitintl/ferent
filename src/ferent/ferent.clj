@@ -33,7 +33,7 @@
   (let [result (do-all params)]
     (.println *err* (str "
 ============================================
-RESULT: Projects in org that grant permissions to service accounts from other projects in the org."))
+RESULT: Dependency metrics for projects in org that grant permissions to service accounts from other projects in the org."))
 
     (clojure.pprint/pprint result)))
 
