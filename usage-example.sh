@@ -1,3 +1,1 @@
-export ORG_ID=999999999999
-export QUERY_FILTER="NOT displayName=doitintl* AND NOT projectId=sys-*"
-lein run
+lein run --org-id 9999999999999 -q "NOT displayName=doit* AND NOT projectId=sys-*"

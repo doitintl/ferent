@@ -1,12 +1,12 @@
 (ns ferent.ferent
   (:require
-   [babashka.process :refer [check process]]
-   [clojure.tools.cli :as cli]
-   [ferent.build-graph :refer [build-graph]]
-   [ferent.metrics :refer [metrics]]
-   [ferent.query-projects :refer [filtered-projects-in-org]]
-   [ferent.service-account-info :refer [service-accounts-granted-role-by-projects service-accounts-in-projects]]
-   [ferent.utils :refer [get-env load-edn] :as utils]))
+    [babashka.process :refer [check process]]
+    [clojure.tools.cli :as cli]
+    [ferent.build-graph :refer [build-graph]]
+    [ferent.metrics :refer [metrics]]
+    [ferent.query-projects :refer [filtered-projects-in-org]]
+    [ferent.service-account-info :refer [service-accounts-granted-role-by-projects service-accounts-in-projects]]
+    [ferent.utils :refer [load-edn] :as utils]))
 
 (defn- build-metrics [projs]
   (metrics (build-graph (service-accounts-granted-role-by-projects projs)
@@ -50,6 +50,5 @@ RESULT: Dependency metrics for projects in org that grant permissions to service
       (throw (IllegalArgumentException. (str errors))))
     (do-all-and-print (:options opts))))
 
-(comment (do-all {:org-id (get-env "ORG_ID" true)
-                  :filter "NOT displayName=doit* AND NOT projectId=sys-*"}))
+
 

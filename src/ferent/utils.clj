@@ -84,20 +84,3 @@
 (defn build-map [sequence f]
   "Build a map where the keys are the elements of sequence and the values are f applied to that key."
   (into {} (map (fn [k] [k (f k)]) sequence)))
-
-(defn get-env
-  "Get env variable.
-  If the env variable is undefined, and  the second argument is provided and is :required,
-  then an error is thrown when the env variable is undefined; or otherwise the   second arg is the default.
-  If the second arg is not provided, then the default is nil."
-
-  ([key default]
-
-   (let [val (System/getenv key)]
-     (if (and (= default :required) (nil? val))
-       (throw (AssertionError. (str "Must provide a value for env variable " key)))
-       (let [retval (or val default)]
-         (do
-           (.println *err* (str "Env for " key ": " retval))
-           retval)))))
-  ([key] (get-env key nil)))
