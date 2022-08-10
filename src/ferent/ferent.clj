@@ -42,11 +42,10 @@ RESULT: Dependency metrics for projects in org that grant permissions to service
     (clojure.pprint/pprint result)))
 
 (def cli-options
-  [["-o" "--org-id ORG_ID" "Numerical org id, mandatory"] `["-q" "--filter QUERY_FILTER" "Query filter" :default "NOT projectId=sys-*"]
+  [["-o" "--org-id ORG_ID" "Numerical org id, mandatory"]
+   ["-q" "--filter QUERY_FILTER" "Query filter" :default "NOT projectId=sys-*"]
    ["-p" "--projects-file PROJECT_FILE" "Project file" :default nil]
    ["-h" "--help"]])
-
-(comment (nrepl.server/start-server :port 8087))
 
 (defn -main [& args]
   (let [opts (cli/parse-opts args cli-options)
@@ -58,3 +57,4 @@ RESULT: Dependency metrics for projects in org that grant permissions to service
 (comment (do-all {:org-id ((System/getenv "ORG_ID")) :filter "NOT displayName=doit* AND NOT projectId=sys-*"})
          (build-metrics ["joshua-playground2" "joshua-playground-host-vpc"]))
 
+(comment (nrepl.server/start-server :port 8087))
