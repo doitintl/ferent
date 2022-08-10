@@ -8,7 +8,8 @@
                                   pfilter
                                   remove-keys-with-empty-val
                                   rotate-to-lowest
-                                  twolevel-sort]]))
+                                  twolevel-sort
+                                  update-vals-in-kv]]))
 
 (deftest test-utilities
   (testing "invert-multimap"
@@ -45,7 +46,14 @@
     (is (= {1 2, 2 3, 3 4}
            (build-map [1 2 3] inc)))))
 
-(deftest test-remove-keys-with-empty-va
+(deftest test-update-vals-in-kv
+  (testing " "
+    (is (=    {:a ":a1" :b ":b2" :c ":c3"}
+              (update-vals-in-kv    (fn [k v]
+                                      (str k v))
+                                    [[:a 1] [:b 2] [:c 3]])))))
+
+(deftest test-remove-keys-with-empty-val
   (testing " "
     (is (= {1 [2], 5 '(6)}
            (remove-keys-with-empty-val

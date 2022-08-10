@@ -15,8 +15,10 @@
                  [com.google.apis/google-api-services-iam "v1-rev20220526-1.32.1"]
                  [babashka/process "0.1.3"]
                  [org.clojure/tools.cli "1.0.206"]
+                 [nrepl/nrepl "0.8.3"]
+
                  ]
-  :repl-options {:init-ns ferent.build-graph}
+  :repl-options {:init-ns ferent.utils}
   :plugins [[lein-cljfmt "0.8.0"]
             [lein-ubersource "0.1.1"]
             ]

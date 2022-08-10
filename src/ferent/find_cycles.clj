@@ -1,5 +1,6 @@
 (ns
- ^{:doc "Code from https://github.com/npcoder2k14/loom/blob/master/src/loom/alg.cljc"}
+ ^{:doc "Code under [Eclipse Public License](http://opensource.org/licenses/eclipse-1.0.php), the same as Clojure.
+ from https://github.com/npcoder2k14/loom/blob/master/src/loom/alg.cljc"}
  ferent.find-cycles
   (:require [ferent.utils :refer [rotate-to-lowest]]
             [loom.graph :refer [directed? nodes successors]]))

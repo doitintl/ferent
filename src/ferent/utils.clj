@@ -1,7 +1,8 @@
 (ns ferent.utils
   (:require [clojure.edn :as edn]
             [clojure.java.io :as io]
-            [com.climate.claypoole :as cp])
+            [com.climate.claypoole :as cp]
+            [sc.api])
   (:import (java.io IOException PushbackReader)))
 
 (def thread-count
@@ -21,11 +22,13 @@
     (pairs-to-multimap flattened)))
 
 (defn invert-invertible-map [multimap]
-  "Invert a multimap, but only if the elements across all vals of the multimap are unique."
+  "Invert a multimap; however, if the elements across all vals of the multimap are
+  not unique, throw an error."
   (let [inverse-multimap (invert-multimap multimap)]
     (assert (every? #(>= 1 (count %)) (vals inverse-multimap))
             (str "Each value should be associated with 1 and only 1 key. Duplicates: "
                  (remove #(>= 1 (count %)) (vals inverse-multimap))))
+    ; replace   v (which is a seq if length1)  with its first member
     (into {} (for [[k v] inverse-multimap] [k (first v)]))))
 
 (defn twolevel-sort [sequence-sequence]
@@ -36,6 +39,7 @@
   "Rotate sequence so that the 0th element is (the first appearance of) its minimal element."
   (let [indexed (map-indexed vector sequence)
         minimal-element (reduce (fn [a b] (if (>= 0 (compare (second a) (second b))) a b)) indexed)]
+    ;(sc.api/spy)
     (vec (take (count sequence) (drop (first minimal-element) (cycle sequence))))))
 
 (defn load-edn
@@ -53,7 +57,7 @@
   "Filter in parallel"
   (map first (filter second (map vector coll (cp/pmap (cp/threadpool thread-count) pred coll)))))
 
-; todo could make the following lazy
+; TODO could make the following lazy
 (defn paginated-query [query-function]
   "Repeatedly call query-function.
   The query-function should return a map with keys :items and :token.
@@ -84,3 +88,18 @@
 (defn build-map [sequence f]
   "Build a map where the keys are the elements of sequence and the values are f applied to that key."
   (into {} (map (fn [k] [k (f k)]) sequence)))
+
+(defn update-vals-in-kv
+  "Returns a map with the same keys as `m` and with the values transformed by `f`. `f` must be a `2-ary` function that receives the key and the value as arguments.
+~~~klipse
+  (update-vals-in-kv list {:a 1 :b 2 :c 3})
+~
+  "
+  [f m]
+  (into {} (map (fn [[a b]] [a (f a b)]) m)))
+
+(comment (rotate-to-lowest [300 400 0 100 50 2000]))
+(comment (sc.api/letsc 7
+                       [sequence indexed minimal-element]))
+(comment (sc.api/defsc 7))
+(comment ferent.utils/sequence)
