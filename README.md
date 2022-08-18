@@ -1,9 +1,9 @@
 # Ferent
 
-A Clojure library to calculate dependency metrics measurements on the model
+A Clojure library to calculate dependency metrics   on the model
 of [JDepend](https://github.com/clarkware/jdepend).
 
-For each project, we calculate dependencies based on the count of service account in other projects that are granted a
+For each project, we calculate coupling based on the count of service accounts in other projects that are granted a
 role in this project. The idea is that the other project "knows about"
 this project and is impacted if this project changes.
 
