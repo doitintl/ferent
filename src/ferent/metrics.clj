@@ -1,6 +1,6 @@
 (ns ferent.metrics
   (:require
-   [ferent.find-cycles :refer [digraph-all-cycles to-digraph]]
+   [ferent.cycles :refer [find-cycles]]
    [ferent.utils :refer [build-map]]
    [sc.api :refer :all]))
 
@@ -29,5 +29,5 @@
         per-project-plus-global-stats
         (assoc metrics-for-projs
                :project-count (count metrics-for-projs)
-               :cycles (digraph-all-cycles (to-digraph dependency-graph)))]
+               :cycles (find-cycles (dependency-graph :arrow-out)))]
     (into (sorted-map-by #(compare (str %1) (str %2))) per-project-plus-global-stats)))

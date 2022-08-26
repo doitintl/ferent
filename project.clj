@@ -6,7 +6,6 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [org.clojure/data.csv "1.0.1"]
                  [vvvvalvalval/scope-capture "0.3.3-s1"]
-                 [aysylu/loom "1.0.2"]
                  [org.clojure/data.json "2.4.0"]
                  [com.climate/claypoole "1.1.4"]
                  [com.google.apis/google-api-services-cloudresourcemanager "v3-rev20220523-1.32.1"]

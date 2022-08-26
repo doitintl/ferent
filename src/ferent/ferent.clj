@@ -18,7 +18,7 @@
     (filtered-projects-in-org filter org-id)))
 
 (defn- validate-org-id! [org-id]
-  (when-not (some? org-id)  (throw (NullPointerException. "org-id missing")))
+  (when-not (some? org-id) (throw (NullPointerException. "org-id missing")))
   (Long/parseLong org-id)                                   ;exception if not number format
   )
 

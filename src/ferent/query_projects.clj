@@ -38,12 +38,12 @@
     (assert (str/ends-with? line-with-org "organization") (str "Last line for ancestors of " proj-id " was " line-with-org))
     (first (str/split line-with-org #"\s+"))))
 
-(defn if-proj-in-folder-in-our-org [project-id parent  our-org]
+(defn if-proj-in-folder-in-our-org [project-id parent our-org]
   "Returns the project-id of the proj if and only if the proj is in organization with org-id.
   This function is used only when the project is in a folder.
   See if-proj-in-our-org for a more general function (that calls this one)."
   (when (not (str/starts-with? parent "folders/"))
-    (throw (IllegalArgumentException.  (str "Parent " parent " of " project-id " is not a folder."))))
+    (throw (IllegalArgumentException. (str "Parent " parent " of " project-id " is not a folder."))))
   (let [org-for-proj (org-of project-id)]
     (cond (= our-org org-for-proj)
           project-id                                        ; Project is   in our org
@@ -67,7 +67,7 @@
           (str/starts-with? parent org-pfx)
           nil                                               ; Project is in an org, but not ours
           :else                                             ; Project is in a folder
-          (if-proj-in-folder-in-our-org projectId  parent our-org))))))
+          (if-proj-in-folder-in-our-org projectId parent our-org))))))
 
 (defn- one-page-query [^CloudResourceManager svc filter org-id pagination-token]
   (let [^SearchProjectsResponse search-response (..

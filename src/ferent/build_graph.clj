@@ -14,14 +14,14 @@
   "Return a map of proj to its dependees, but may include self-dependency and empty-sets"
   (update-vals project-to-sas-granted-role
                ;remove those where the project of the SA was not found
-               (comp #(remove nil? %)                   #(proj-for-service-accounts % proj-to-its-sas))))
+               (comp #(remove nil? %) #(proj-for-service-accounts % proj-to-its-sas))))
 
 (defn remove-self-dependencies [proj-to-dependees]
   (update-vals-in-kv (fn [proj deps] (set (remove #{proj} deps)))
                      proj-to-dependees))
 
 (defn arrows-both-ways [arrow-in]
-  {:arrow-in arrow-in
+  {:arrow-in  arrow-in
    :arrow-out (invert-multimap arrow-in)})
 
 (defn build-graph [project-to-sas-granted-role proj-to-its-sas]
@@ -29,6 +29,4 @@
       remove-self-dependencies
       remove-keys-with-empty-val
       arrows-both-ways))
-
-
 

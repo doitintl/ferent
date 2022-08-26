@@ -1,4 +1,3 @@
-
 "This namespace holds the API-access to info about the service accounts
 to which each project gives permissions, and the org that each is in."
 

@@ -89,6 +89,9 @@
   "Build a map where the keys are the elements of sequence and the values are f applied to that key."
   (into {} (map (fn [k] [k (f k)]) sequence)))
 
+(defn sort-and-dedupe [vec-vec]
+  (dedupe (twolevel-sort vec-vec)))
+
 (defn update-vals-in-kv
   "Returns a map with the same keys as `m` and with the values transformed by `f`. `f` must be a `2-ary` function that receives the key and the value as arguments.
 ~~~klipse
@@ -98,8 +101,10 @@
   [f m]
   (into {} (map (fn [[a b]] [a (f a b)]) m)))
 
-(comment (rotate-to-lowest [300 400 0 100 50 2000]))
-(comment (sc.api/letsc 7
-                       [sequence indexed minimal-element]))
-(comment (sc.api/defsc 7))
-(comment ferent.utils/sequence)
+;(defn flatten-to-1-nesting [s]
+;  (prn s)
+;  (vec (for [e s] (if
+;                    (string? (first e))
+;                    e
+;                    (flatten-to-1-nesting e)))))
+;(comment (flatten-to-1-nesting [ ["1" "2"] [[["3"]]]]))

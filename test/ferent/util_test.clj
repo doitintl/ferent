@@ -48,10 +48,10 @@
 
 (deftest test-update-vals-in-kv
   (testing " "
-    (is (=    {:a ":a1" :b ":b2" :c ":c3"}
-              (update-vals-in-kv    (fn [k v]
-                                      (str k v))
-                                    [[:a 1] [:b 2] [:c 3]])))))
+    (is (= {:a ":a1" :b ":b2" :c ":c3"}
+           (update-vals-in-kv (fn [k v]
+                                (str k v))
+                              [[:a 1] [:b 2] [:c 3]])))))
 
 (deftest test-remove-keys-with-empty-val
   (testing " "
