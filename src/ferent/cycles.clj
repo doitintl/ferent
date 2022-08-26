@@ -10,9 +10,8 @@
     []
     :else
     (vec
-     (filter not-empty
-             (concat cycles
-                     (mapcat (fn [child] (dfs child (conj path-so-far node) adj-map, cycles)) (get adj-map node [])))))))
+      (concat cycles
+              (filter not-empty (mapcat (fn [child] (dfs child (conj path-so-far node) adj-map cycles)) (get adj-map node [])))))))
 
 (defn find-cycles [adj-map]
   (vec (sort-and-dedupe (reduce concat (for [node (keys adj-map)] (dfs node [] adj-map []))))))

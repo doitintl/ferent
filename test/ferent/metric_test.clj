@@ -20,8 +20,8 @@
   (testing "a cycle"
     (is (= [["p1" "p2"]]                                    ;simplest case
            ((metrics
-             {:arrow-in  {"p2" #{"p1"} "p1" #{"p2"}},
-              :arrow-out {"p1" #{"p2"} "p2" #{"p1"}}})
+             {:arrow-in  {"p2" #{"p1"}, "p1" #{"p2"}},
+              :arrow-out {"p1" #{"p2"} ,"p2" #{"p1"}}})
             :cycles)))
     (is (= [["p1" "p2" "p3"]]
            ((metrics
