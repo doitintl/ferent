@@ -1,18 +1,20 @@
 (ns ferent.cycles
   (:require
-   [ferent.utils :refer [rotate-to-lowest sort-and-dedupe]]))
+    [ferent.utils :refer [rotate-to-lowest sort-and-dedupe]]))
 
-(defn- dfs [node path-so-far adj-map cycles]
+(defn- depth-first-search [node path adjacency-map cycles]
   (cond
-    (= node (first path-so-far))
-    [(rotate-to-lowest path-so-far)]
-    (some #{node} path-so-far)
+    (= node (first path))
+    [(rotate-to-lowest path)]
+    (some #{node} path)
     []
     :else
-    (vec
-      (concat cycles
-              (filter not-empty (mapcat (fn [child] (dfs child (conj path-so-far node) adj-map cycles)) (get adj-map node [])))))))
+    (concat cycles
+            (filter not-empty
+                    (mapcat
+                      (fn [child] (depth-first-search child (conj path node) adjacency-map cycles))
+                      (get adjacency-map node []))))))
 
 (defn find-cycles [adj-map]
-  (vec (sort-and-dedupe (reduce concat (for [node (keys adj-map)] (dfs node [] adj-map []))))))
+  (vec (sort-and-dedupe (reduce concat (for [node (keys adj-map)] (depth-first-search node [] adj-map []))))))
 
