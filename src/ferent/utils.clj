@@ -100,11 +100,3 @@
   "
   [f m]
   (into {} (map (fn [[a b]] [a (f a b)]) m)))
-
-;(defn flatten-to-1-nesting [s]
-;  (prn s)
-;  (vec (for [e s] (if
-;                    (string? (first e))
-;                    e
-;                    (flatten-to-1-nesting e)))))
-;(comment (flatten-to-1-nesting [ ["1" "2"] [[["3"]]]]))
