@@ -3,6 +3,8 @@
 A Clojure library to calculate dependency metrics   on the model
 of [JDepend](https://github.com/clarkware/jdepend).
 
+See [this associated article](https://www.usenix.org/publications/loginonline/untangling-cloud) for background.
+
 For each project, we calculate coupling based on the count of service accounts in other projects that are granted a
 role in this project. The idea is that the other project "knows about"
 this project and is impacted if this project changes.
@@ -130,7 +132,11 @@ Key steps
       * Then, we accept those in the org; filter out those not in the org.
 
 [1]: https://cloud.google.com/java/docs/reference/google-cloud-resourcemanager/latest/com.google.cloud.resourcemanager.v3
- 
+
+## Acknowledgement
+I would like to thank Yehonatan Sharvit for all he has taught me about Clojure. 
+The remaining errors are mine; hopefully my code will 
+get even more Clojuery over time.
 
 ## License
 
